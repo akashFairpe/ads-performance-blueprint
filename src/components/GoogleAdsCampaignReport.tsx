@@ -312,8 +312,8 @@ const GoogleAdsCampaignReport = () => {
                   </tbody>
                 </table>
               </div>
-            </CardContent>
-          </Card>
+            </div>
+          </div>
         </section>
 
         {/* Charts Section */}

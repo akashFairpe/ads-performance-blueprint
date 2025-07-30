@@ -52,6 +52,18 @@ export default {
 					DEFAULT: 'hsl(var(--card))',
 					foreground: 'hsl(var(--card-foreground))'
 				},
+				// Report-specific colors
+				'report-header': 'hsl(var(--report-header))',
+				'report-subtext': 'hsl(var(--report-subtext))',
+				success: 'hsl(var(--success))',
+				warning: 'hsl(var(--warning))',
+				info: 'hsl(var(--info))',
+				// Chart colors
+				'chart-primary': 'hsl(var(--chart-primary))',
+				'chart-secondary': 'hsl(var(--chart-secondary))',
+				'chart-tertiary': 'hsl(var(--chart-tertiary))',
+				'chart-quaternary': 'hsl(var(--chart-quaternary))',
+				'chart-quinary': 'hsl(var(--chart-quinary))',
 				sidebar: {
 					DEFAULT: 'hsl(var(--sidebar-background))',
 					foreground: 'hsl(var(--sidebar-foreground))',

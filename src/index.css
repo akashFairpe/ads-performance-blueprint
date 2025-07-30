@@ -161,7 +161,7 @@
   }
 
   .dashboard-kpi {
-    @apply relative bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-2xl p-6 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden group;
+    @apply relative bg-white/90 backdrop-blur-sm border border-gray-200/50 rounded-2xl p-6 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 overflow-hidden;
   }
 
   .dashboard-kpi::before {

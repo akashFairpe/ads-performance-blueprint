@@ -130,13 +130,13 @@ const GoogleAdsCampaignReport = () => {
   const formatPercentage = (rate: number) => `${rate.toFixed(2)}%`;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-secondary/5 print:bg-white">
-      <div className="report-container">
-        {/* Header Section - Same as Account Report for uniformity */}
-        <div className="report-header" style={{ borderTopColor: brandColor }}>
+    <div className="dashboard-container">
+      <div className="dashboard-wrapper">
+        {/* Modern Dashboard Header */}
+        <div className="dashboard-header">
           <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center space-x-4">
-              <div className="logo-section">
+            <div className="flex items-center space-x-6">
+              <div className="relative group">
                 {logoImage ? (
                   <div className="relative">
                     <img 
@@ -263,16 +263,15 @@ const GoogleAdsCampaignReport = () => {
         </div>
 
         {/* Campaign Performance Overview Table */}
-        <section className="page-break-avoid mb-8">
-          <Card className="report-card">
-            <CardHeader>
-              <CardTitle className="text-xl font-semibold flex items-center">
-                📊 Campaign Performance Overview
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
+        <section className="page-break-avoid">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-1 h-8 bg-gradient-to-b from-blue-500 to-purple-500 rounded-full"></div>
+            <h2 className="text-2xl font-bold text-gray-800">📊 Campaign Performance Overview</h2>
+          </div>
+          <div className="dashboard-chart-card glow-effect">
+            <div className="chart-card-content">
               <div className="overflow-x-auto">
-                <table className="data-table">
+                <table className="dashboard-table">
                   <thead>
                     <tr>
                       <th>Campaign Name</th>

@@ -165,16 +165,16 @@ const GoogleAdsReport: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background">
-      {/* Report Header */}
-      <div className="report-header p-8 print-full-width" style={{ backgroundColor: `${brandColor}10` }}>
-        <div className="max-w-6xl mx-auto">
+    <div className="dashboard-container">
+      <div className="dashboard-wrapper">
+        {/* Modern Dashboard Header */}
+        <div className="dashboard-header">
           <div className="flex justify-between items-start mb-6">
-            <div className="flex items-center space-x-4">
-              {/* Company Logo - Image Upload */}
+            <div className="flex items-center space-x-6">
+              {/* Company Logo - Enhanced Upload */}
               <div className="relative group">
                 <div 
-                  className="w-16 h-16 rounded-lg flex items-center justify-center overflow-hidden border-2 border-border hover:border-primary transition-colors cursor-pointer"
+                  className="w-20 h-20 rounded-2xl flex items-center justify-center overflow-hidden border-2 border-gray-200/50 hover:border-blue-400 transition-all duration-300 cursor-pointer shadow-lg interactive-hover"
                   style={{ backgroundColor: logoImage ? 'transparent' : brandColor }}
                   onClick={() => document.getElementById('logo-upload')?.click()}
                 >
@@ -186,13 +186,13 @@ const GoogleAdsReport: React.FC = () => {
                       id="company_logo_image"
                     />
                   ) : (
-                    <span className="text-white font-bold text-lg" id="company_logo_text">
+                    <span className="text-white font-bold text-xl" id="company_logo_text">
                       {companyLogo}
                     </span>
                   )}
                   
                   {/* Upload overlay */}
-                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
+                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-2xl">
                     <span className="text-white text-xs font-medium">
                       {logoImage ? 'Change' : 'Upload'}
                     </span>
@@ -239,7 +239,8 @@ const GoogleAdsReport: React.FC = () => {
               
               <div>
                 <h1 
-                  className="text-3xl font-bold text-report-header editable-header"
+                  className="text-4xl font-bold dashboard-editable-field mb-2"
+                  style={{ color: brandColor }}
                   contentEditable
                   suppressContentEditableWarning={true}
                   onBlur={(e) => setReportTitle(e.currentTarget.textContent || '')}
@@ -248,7 +249,7 @@ const GoogleAdsReport: React.FC = () => {
                   {reportTitle}
                 </h1>
                 <p 
-                  className="text-report-subtext mt-1 editable-header"
+                  className="text-gray-600 text-lg dashboard-editable-field"
                   contentEditable
                   suppressContentEditableWarning={true}
                   onBlur={(e) => setReportSubtitle(e.currentTarget.textContent || '')}
@@ -258,10 +259,20 @@ const GoogleAdsReport: React.FC = () => {
                 </p>
               </div>
             </div>
-            <div className="text-right text-sm text-report-subtext">
-              <p>Generated: 
+            <div className="text-right space-y-2">
+              <div className="no-print">
+                <label className="text-sm font-medium text-gray-600">Brand Color:</label>
+                <input
+                  type="color"
+                  value={brandColor}
+                  onChange={(e) => setBrandColor(e.target.value)}
+                  className="brand-color-picker ml-2"
+                  id="brand_color_picker"
+                />
+              </div>
+              <p className="text-sm text-gray-600">Generated: 
                 <span 
-                  className="editable-header ml-1"
+                  className="dashboard-editable-field ml-1"
                   contentEditable
                   suppressContentEditableWarning={true}
                   onBlur={(e) => setGeneratedDate(e.currentTarget.textContent || '')}
@@ -270,9 +281,9 @@ const GoogleAdsReport: React.FC = () => {
                   {generatedDate}
                 </span>
               </p>
-              <p>Report ID: 
+              <p className="text-sm text-gray-600">Report ID: 
                 <span 
-                  className="editable-header ml-1"
+                  className="dashboard-editable-field ml-1"
                   contentEditable
                   suppressContentEditableWarning={true}
                   onBlur={(e) => setReportId(e.currentTarget.textContent || '')}
@@ -284,144 +295,182 @@ const GoogleAdsReport: React.FC = () => {
             </div>
           </div>
           
-          {/* Brand Color Picker */}
-          <div className="flex items-center space-x-2 mb-4 no-print">
-            <span className="text-sm text-report-subtext">Brand Color:</span>
-            <input
-              type="color"
-              value={brandColor}
-              onChange={(e) => setBrandColor(e.target.value)}
-              className="brand-color-picker"
-              id="brand_color_picker"
-            />
-          </div>
-          
           {/* Logo Upload Guidelines */}
-          <div className="bg-muted/50 border border-border rounded-lg p-4 text-sm no-print">
-            <h4 className="font-medium text-foreground mb-2">Logo Upload Guidelines:</h4>
-            <ul className="text-muted-foreground space-y-1">
-              <li>• Maximum file size: 2MB</li>
-              <li>• Recommended dimensions: 512x512 pixels (square)</li>
-              <li>• Supported formats: PNG, JPG, SVG</li>
-              <li>• Logo will be automatically resized to fit the 64x64px container</li>
-            </ul>
+          <div className="bg-blue-50/80 border border-blue-200 rounded-2xl p-6 text-sm no-print mb-6">
+            <h4 className="font-semibold text-blue-800 mb-3 flex items-center gap-2">
+              📋 Logo Upload Guidelines
+            </h4>
+            <div className="grid md:grid-cols-2 gap-4 text-blue-700">
+              <ul className="space-y-2">
+                <li className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+                  Maximum file size: 2MB
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+                  Recommended: 512x512 pixels
+                </li>
+              </ul>
+              <ul className="space-y-2">
+                <li className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+                  Formats: PNG, JPG, SVG
+                </li>
+                <li className="flex items-center gap-2">
+                  <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
+                  Auto-resized for display
+                </li>
+              </ul>
+            </div>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div>
-              <label className="block text-report-subtext mb-1">Date Range</label>
+              <label className="block text-gray-700 font-medium mb-2">📅 Date Range</label>
               <input 
                 type="text" 
                 value={dateRange}
                 onChange={(e) => setDateRange(e.target.value)}
-                className="w-full p-2 border border-border rounded bg-card"
+                className="w-full p-3 border border-gray-200 rounded-xl bg-white/80 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all duration-200"
                 id="report_date_range" // API integration marker
               />
             </div>
             <div>
-              <label className="block text-report-subtext mb-1">Client Name</label>
+              <label className="block text-gray-700 font-medium mb-2">👤 Client Name</label>
               <input 
                 type="text" 
                 value={clientName}
                 onChange={(e) => setClientName(e.target.value)}
-                className="w-full p-2 border border-border rounded bg-card"
+                className="w-full p-3 border border-gray-200 rounded-xl bg-white/80 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all duration-200"
                 id="client_name" // API integration marker
               />
             </div>
             <div>
-              <label className="block text-report-subtext mb-1">Account ID</label>
+              <label className="block text-gray-700 font-medium mb-2">🔢 Account ID</label>
               <input 
                 type="text" 
                 value={accountId}
                 onChange={(e) => setAccountId(e.target.value)}
-                className="w-full p-2 border border-border rounded bg-card"
+                className="w-full p-3 border border-gray-200 rounded-xl bg-white/80 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all duration-200"
                 id="account_id" // API integration marker
               />
             </div>
           </div>
         </div>
-      </div>
 
-      <div className="max-w-6xl mx-auto p-8 space-y-8">
-        {/* Performance Overview Metrics */}
-        <section className="report-card p-6 page-break-avoid">
-          <h2 className="text-xl font-semibold text-report-header mb-6">Performance Overview</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            <div className="metric-card text-center">
-              <div className="text-2xl font-bold text-primary" id="metric_clicks">
+        {/* Dashboard KPI Overview */}
+        <section className="page-break-avoid">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-1 h-8 bg-gradient-to-b from-blue-500 to-purple-500 rounded-full"></div>
+            <h2 className="text-2xl font-bold text-gray-800">📊 Performance Overview</h2>
+          </div>
+          <div className="kpi-dashboard-grid">
+            <div className="dashboard-kpi glow-effect">
+              <div className="kpi-icon">👆</div>
+              <div className="kpi-value" id="metric_clicks">
                 {formatNumber(reportData.clicks)}
               </div>
-              <div className="text-sm text-report-subtext mt-1">Total Clicks</div>
+              <div className="kpi-label">Total Clicks</div>
+              <div className="kpi-change positive">+12.5%</div>
             </div>
-            <div className="metric-card text-center">
-              <div className="text-2xl font-bold text-chart-secondary" id="metric_impressions">
+            <div className="dashboard-kpi glow-effect">
+              <div className="kpi-icon">👁️</div>
+              <div className="kpi-value" id="metric_impressions">
                 {formatNumber(reportData.impressions)}
               </div>
-              <div className="text-sm text-report-subtext mt-1">Impressions</div>
+              <div className="kpi-label">Impressions</div>
+              <div className="kpi-change positive">+8.3%</div>
             </div>
-            <div className="metric-card text-center">
-              <div className="text-2xl font-bold text-success" id="metric_ctr">
+            <div className="dashboard-kpi glow-effect">
+              <div className="kpi-icon">🎯</div>
+              <div className="kpi-value" id="metric_ctr">
                 {formatPercentage(reportData.ctr)}
               </div>
-              <div className="text-sm text-report-subtext mt-1">CTR</div>
+              <div className="kpi-label">CTR</div>
+              <div className="kpi-change positive">+15.2%</div>
             </div>
-            <div className="metric-card text-center">
-              <div className="text-2xl font-bold text-warning" id="metric_avg_cpc">
+            <div className="dashboard-kpi glow-effect">
+              <div className="kpi-icon">💰</div>
+              <div className="kpi-value" id="metric_avg_cpc">
                 {formatCurrency(reportData.avgCpc)}
               </div>
-              <div className="text-sm text-report-subtext mt-1">Avg CPC</div>
+              <div className="kpi-label">Avg CPC</div>
+              <div className="kpi-change negative">-5.7%</div>
             </div>
-            <div className="metric-card text-center">
-              <div className="text-2xl font-bold text-chart-tertiary" id="metric_conversions">
+            <div className="dashboard-kpi glow-effect">
+              <div className="kpi-icon">🔄</div>
+              <div className="kpi-value" id="metric_conversions">
                 {formatNumber(reportData.conversions)}
               </div>
-              <div className="text-sm text-report-subtext mt-1">Conversions</div>
+              <div className="kpi-label">Conversions</div>
+              <div className="kpi-change positive">+22.1%</div>
             </div>
-            <div className="metric-card text-center">
-              <div className="text-2xl font-bold text-info" id="metric_conversion_rate">
+            <div className="dashboard-kpi glow-effect">
+              <div className="kpi-icon">📈</div>
+              <div className="kpi-value" id="metric_conversion_rate">
                 {formatPercentage(reportData.conversionRate)}
               </div>
-              <div className="text-sm text-report-subtext mt-1">Conversion Rate</div>
+              <div className="kpi-label">Conversion Rate</div>
+              <div className="kpi-change positive">+18.4%</div>
             </div>
-            <div className="metric-card text-center">
-              <div className="text-2xl font-bold text-destructive" id="metric_cost">
+            <div className="dashboard-kpi glow-effect">
+              <div className="kpi-icon">💸</div>
+              <div className="kpi-value" id="metric_cost">
                 {formatCurrency(reportData.cost)}
               </div>
-              <div className="text-sm text-report-subtext mt-1">Total Cost</div>
+              <div className="kpi-label">Total Cost</div>
+              <div className="kpi-change positive">+6.2%</div>
             </div>
-            <div className="metric-card text-center">
-              <div className="text-2xl font-bold text-success" id="metric_roas">
+            <div className="dashboard-kpi glow-effect">
+              <div className="kpi-icon">⚡</div>
+              <div className="kpi-value" id="metric_roas">
                 {reportData.roas.toFixed(1)}x
               </div>
-              <div className="text-sm text-report-subtext mt-1">ROAS</div>
+              <div className="kpi-label">ROAS</div>
+              <div className="kpi-change positive">+25.8%</div>
             </div>
           </div>
         </section>
 
-        {/* Trends & Charts */}
-        <section className="report-card p-6 page-break page-break-avoid">
-          <h2 className="text-xl font-semibold text-report-header mb-6">Performance Trends</h2>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div>
-              <h3 className="text-lg font-medium mb-4">Daily Spend vs Conversions</h3>
-              <div className="chart-placeholder h-64" id="chart_daily_trends">
-                {/* API Integration Point: Replace with dynamic chart */}
-                <div className="text-center">
-                  <div className="text-muted-foreground mb-2">📈 Line Chart</div>
-                  <div className="text-sm text-muted-foreground">
-                    Daily performance trend visualization
+        {/* Enhanced Charts Section */}
+        <section className="page-break-avoid">
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-1 h-8 bg-gradient-to-b from-purple-500 to-teal-500 rounded-full"></div>
+            <h2 className="text-2xl font-bold text-gray-800">📈 Performance Analytics</h2>
+          </div>
+          <div className="chart-dashboard-grid">
+            <div className="dashboard-chart-card glow-effect">
+              <div className="chart-card-header">
+                <h3 className="chart-card-title">
+                  📊 Daily Spend vs Conversions
+                </h3>
+                <p className="chart-card-subtitle">Track spending efficiency and conversion trends over time</p>
+              </div>
+              <div className="chart-card-content">
+                <div className="whatagraph-chart-placeholder" id="chart_daily_trends">
+                  <div className="chart-icon-large">📈</div>
+                  <div className="chart-description">
+                    <div className="chart-main-text">Line Chart: Daily Performance Trends</div>
+                    <div className="chart-sub-text">Data will be injected via API integration</div>
+                    <div className="chart-sub-text">Shows spend efficiency and conversion patterns</div>
                   </div>
                 </div>
               </div>
             </div>
-            <div>
-              <h3 className="text-lg font-medium mb-4">Top Campaign Metrics</h3>
-              <div className="chart-placeholder h-64" id="chart_campaign_metrics">
-                {/* API Integration Point: Replace with dynamic chart */}
-                <div className="text-center">
-                  <div className="text-muted-foreground mb-2">📊 Bar Chart</div>
-                  <div className="text-sm text-muted-foreground">
-                    CTR, CPC, Conversions comparison
+            <div className="dashboard-chart-card glow-effect">
+              <div className="chart-card-header">
+                <h3 className="chart-card-title">
+                  🎯 Campaign Metrics Comparison
+                </h3>
+                <p className="chart-card-subtitle">Compare CTR, CPC, and conversion performance across campaigns</p>
+              </div>
+              <div className="chart-card-content">
+                <div className="whatagraph-chart-placeholder" id="chart_campaign_metrics">
+                  <div className="chart-icon-large">📊</div>
+                  <div className="chart-description">
+                    <div className="chart-main-text">Bar Chart: Campaign Performance</div>
+                    <div className="chart-sub-text">Multi-metric comparison visualization</div>
+                    <div className="chart-sub-text">CTR, CPC, Conversions analysis</div>
                   </div>
                 </div>
               </div>

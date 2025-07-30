@@ -1,7 +1,7 @@
-import GoogleAdsReport from "@/components/GoogleAdsReport";
+import GoogleAdsCampaignReport from "@/components/GoogleAdsCampaignReport";
 
 const Index = () => {
-  return <GoogleAdsReport />;
+  return <GoogleAdsCampaignReport />;
 };
 
 export default Index;

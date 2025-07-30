@@ -55,6 +55,7 @@ const GoogleAdsReport: React.FC = () => {
   const [reportTitle, setReportTitle] = useState("Google Ads Account Performance Summary");
   const [reportSubtitle, setReportSubtitle] = useState("Comprehensive advertising performance analysis");
   const [companyLogo, setCompanyLogo] = useState("AS");
+  const [logoImage, setLogoImage] = useState<string | null>(null);
   const [brandColor, setBrandColor] = useState("#3b82f6");
   const [generatedDate, setGeneratedDate] = useState(new Date().toLocaleDateString());
   const [reportId, setReportId] = useState(`RPT-${Date.now()}`);
@@ -106,6 +107,47 @@ const GoogleAdsReport: React.FC = () => {
     }
   };
 
+  // Logo upload handler with validation
+  const handleLogoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    // File size validation (max 2MB)
+    if (file.size > 2 * 1024 * 1024) {
+      alert('Logo file size must be less than 2MB');
+      return;
+    }
+
+    // File type validation
+    if (!file.type.startsWith('image/')) {
+      alert('Please upload a valid image file (PNG, JPG, SVG)');
+      return;
+    }
+
+    // Create image element to check dimensions
+    const img = new Image();
+    img.onload = () => {
+      // Dimension validation (recommended: square, max 512x512)
+      if (img.width > 512 || img.height > 512) {
+        alert('Logo dimensions should be maximum 512x512 pixels for best results');
+        return;
+      }
+
+      // If validation passes, create data URL
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        setLogoImage(e.target?.result as string);
+      };
+      reader.readAsDataURL(file);
+    };
+    
+    img.src = URL.createObjectURL(file);
+  };
+
+  const removeLogo = () => {
+    setLogoImage(null);
+  };
+
   const formatCurrency = (amount: number): string => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
@@ -129,19 +171,72 @@ const GoogleAdsReport: React.FC = () => {
         <div className="max-w-6xl mx-auto">
           <div className="flex justify-between items-start mb-6">
             <div className="flex items-center space-x-4">
-              {/* Company Logo - Editable */}
-              <div 
-                className="w-16 h-16 rounded-lg flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity"
-                style={{ backgroundColor: brandColor }}
-                onClick={() => {
-                  const newLogo = prompt("Enter new logo text (2-3 characters):", companyLogo);
-                  if (newLogo) setCompanyLogo(newLogo);
-                }}
-              >
-                <span className="text-white font-bold text-lg" id="company_logo">
-                  {companyLogo}
-                </span>
+              {/* Company Logo - Image Upload */}
+              <div className="relative group">
+                <div 
+                  className="w-16 h-16 rounded-lg flex items-center justify-center overflow-hidden border-2 border-border hover:border-primary transition-colors cursor-pointer"
+                  style={{ backgroundColor: logoImage ? 'transparent' : brandColor }}
+                  onClick={() => document.getElementById('logo-upload')?.click()}
+                >
+                  {logoImage ? (
+                    <img 
+                      src={logoImage} 
+                      alt="Company Logo" 
+                      className="w-full h-full object-contain"
+                      id="company_logo_image"
+                    />
+                  ) : (
+                    <span className="text-white font-bold text-lg" id="company_logo_text">
+                      {companyLogo}
+                    </span>
+                  )}
+                  
+                  {/* Upload overlay */}
+                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-lg">
+                    <span className="text-white text-xs font-medium">
+                      {logoImage ? 'Change' : 'Upload'}
+                    </span>
+                  </div>
+                </div>
+                
+                {/* Hidden file input */}
+                <input
+                  id="logo-upload"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleLogoUpload}
+                  className="hidden"
+                />
+                
+                {/* Remove logo button */}
+                {logoImage && (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      removeLogo();
+                    }}
+                    className="absolute -top-2 -right-2 w-6 h-6 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center text-xs font-bold hover:scale-110 transition-transform no-print"
+                  >
+                    ×
+                  </button>
+                )}
               </div>
+              
+              {/* Fallback text logo editor (when no image) */}
+              {!logoImage && (
+                <div className="text-xs text-muted-foreground no-print">
+                  <input
+                    type="text"
+                    value={companyLogo}
+                    onChange={(e) => setCompanyLogo(e.target.value)}
+                    className="w-12 text-center p-1 border border-border rounded bg-card"
+                    placeholder="Logo"
+                    maxLength={3}
+                  />
+                  <p className="mt-1">Text logo</p>
+                </div>
+              )}
+              
               <div>
                 <h1 
                   className="text-3xl font-bold text-report-header editable-header"
@@ -199,6 +294,17 @@ const GoogleAdsReport: React.FC = () => {
               className="brand-color-picker"
               id="brand_color_picker"
             />
+          </div>
+          
+          {/* Logo Upload Guidelines */}
+          <div className="bg-muted/50 border border-border rounded-lg p-4 text-sm no-print">
+            <h4 className="font-medium text-foreground mb-2">Logo Upload Guidelines:</h4>
+            <ul className="text-muted-foreground space-y-1">
+              <li>• Maximum file size: 2MB</li>
+              <li>• Recommended dimensions: 512x512 pixels (square)</li>
+              <li>• Supported formats: PNG, JPG, SVG</li>
+              <li>• Logo will be automatically resized to fit the 64x64px container</li>
+            </ul>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">

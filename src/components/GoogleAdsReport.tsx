@@ -25,7 +25,7 @@ interface CampaignData {
 
 const GoogleAdsReport: React.FC = () => {
   // Static sample data - will be replaced with API calls
-  const [reportData] = useState<MetricData>({
+  const [reportData, setReportData] = useState<MetricData>({
     clicks: 12547,
     impressions: 487532,
     ctr: 2.57,
@@ -36,7 +36,7 @@ const GoogleAdsReport: React.FC = () => {
     roas: 4.8
   });
 
-  const [campaignData] = useState<CampaignData[]>([
+  const [campaignData, setCampaignData] = useState<CampaignData[]>([
     { name: "Brand Campaign - Search", spend: 5240.23, impressions: 145632, ctr: 3.2, conversions: 542, roas: 5.2 },
     { name: "Shopping - Electronics", spend: 3987.45, impressions: 187543, ctr: 2.1, conversions: 423, roas: 4.6 },
     { name: "Display - Retargeting", spend: 2876.12, impressions: 98765, ctr: 1.8, conversions: 287, roas: 3.9 },
@@ -48,9 +48,63 @@ const GoogleAdsReport: React.FC = () => {
     "Strong performance this month with ROAS exceeding target by 20%. Brand campaigns continue to deliver the highest conversion rates. Recommend increasing budget allocation to top-performing search campaigns while optimizing display creative for better engagement."
   );
 
+  // Header editable fields
   const [dateRange, setDateRange] = useState("November 1-30, 2024");
   const [clientName, setClientName] = useState("TechCorp Solutions");
   const [accountId, setAccountId] = useState("123-456-7890");
+  const [reportTitle, setReportTitle] = useState("Google Ads Account Performance Summary");
+  const [reportSubtitle, setReportSubtitle] = useState("Comprehensive advertising performance analysis");
+  const [companyLogo, setCompanyLogo] = useState("AS");
+  const [brandColor, setBrandColor] = useState("#3b82f6");
+  const [generatedDate, setGeneratedDate] = useState(new Date().toLocaleDateString());
+  const [reportId, setReportId] = useState(`RPT-${Date.now()}`);
+
+  // Summary sections
+  const [keyWins, setKeyWins] = useState([
+    "ROAS exceeded target by 20%",
+    "Brand campaigns achieved 5.2x ROAS", 
+    "Conversion rate improved 15% MoM"
+  ]);
+  const [keyLearnings, setKeyLearnings] = useState([
+    "Search campaigns outperform display 2:1",
+    "Mobile traffic converts 25% better",
+    "Video ads show strong engagement"
+  ]);
+  const [improvementAreas, setImprovementAreas] = useState([
+    "Optimize display creative assets",
+    "Expand high-performing keywords",
+    "Test new audience segments"
+  ]);
+  const [nextSteps, setNextSteps] = useState(
+    "• Increase budget allocation to Brand and Competitor search campaigns (+30%)\n• Launch A/B test for new video ad creative concepts\n• Implement enhanced conversion tracking for better attribution\n• Schedule weekly performance reviews for optimization opportunities"
+  );
+
+  // API Integration Functions
+  const fetchReportData = async () => {
+    try {
+      const response = await fetch('/api/google-ads/performance', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${process.env.GOOGLE_ADS_API_TOKEN}`
+        }
+      });
+      const data = await response.json();
+      setReportData(data);
+    } catch (error) {
+      console.error('Failed to load performance data:', error);
+    }
+  };
+
+  const fetchCampaignData = async () => {
+    try {
+      const response = await fetch('/api/google-ads/campaigns');
+      const campaigns = await response.json();
+      setCampaignData(campaigns);
+    } catch (error) {
+      console.error('Failed to load campaign data:', error);
+    }
+  };
 
   const formatCurrency = (amount: number): string => {
     return new Intl.NumberFormat('en-US', {
@@ -71,27 +125,80 @@ const GoogleAdsReport: React.FC = () => {
   return (
     <div className="min-h-screen bg-background">
       {/* Report Header */}
-      <div className="report-header p-8 print-full-width">
+      <div className="report-header p-8 print-full-width" style={{ backgroundColor: `${brandColor}10` }}>
         <div className="max-w-6xl mx-auto">
           <div className="flex justify-between items-start mb-6">
             <div className="flex items-center space-x-4">
-              {/* Company Logo Placeholder - API Integration Point */}
-              <div className="w-16 h-16 bg-primary rounded-lg flex items-center justify-center">
-                <span className="text-primary-foreground font-bold text-lg">AS</span>
+              {/* Company Logo - Editable */}
+              <div 
+                className="w-16 h-16 rounded-lg flex items-center justify-center cursor-pointer hover:opacity-80 transition-opacity"
+                style={{ backgroundColor: brandColor }}
+                onClick={() => {
+                  const newLogo = prompt("Enter new logo text (2-3 characters):", companyLogo);
+                  if (newLogo) setCompanyLogo(newLogo);
+                }}
+              >
+                <span className="text-white font-bold text-lg" id="company_logo">
+                  {companyLogo}
+                </span>
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-report-header">
-                  Google Ads Account Performance Summary
+                <h1 
+                  className="text-3xl font-bold text-report-header editable-header"
+                  contentEditable
+                  suppressContentEditableWarning={true}
+                  onBlur={(e) => setReportTitle(e.currentTarget.textContent || '')}
+                  id="report_title"
+                >
+                  {reportTitle}
                 </h1>
-                <p className="text-report-subtext mt-1">
-                  Comprehensive advertising performance analysis
+                <p 
+                  className="text-report-subtext mt-1 editable-header"
+                  contentEditable
+                  suppressContentEditableWarning={true}
+                  onBlur={(e) => setReportSubtitle(e.currentTarget.textContent || '')}
+                  id="report_subtitle"
+                >
+                  {reportSubtitle}
                 </p>
               </div>
             </div>
             <div className="text-right text-sm text-report-subtext">
-              <p>Generated: {new Date().toLocaleDateString()}</p>
-              <p>Report ID: RPT-{Date.now()}</p>
+              <p>Generated: 
+                <span 
+                  className="editable-header ml-1"
+                  contentEditable
+                  suppressContentEditableWarning={true}
+                  onBlur={(e) => setGeneratedDate(e.currentTarget.textContent || '')}
+                  id="generated_date"
+                >
+                  {generatedDate}
+                </span>
+              </p>
+              <p>Report ID: 
+                <span 
+                  className="editable-header ml-1"
+                  contentEditable
+                  suppressContentEditableWarning={true}
+                  onBlur={(e) => setReportId(e.currentTarget.textContent || '')}
+                  id="report_id"
+                >
+                  {reportId}
+                </span>
+              </p>
             </div>
+          </div>
+          
+          {/* Brand Color Picker */}
+          <div className="flex items-center space-x-2 mb-4 no-print">
+            <span className="text-sm text-report-subtext">Brand Color:</span>
+            <input
+              type="color"
+              value={brandColor}
+              onChange={(e) => setBrandColor(e.target.value)}
+              className="brand-color-picker"
+              id="brand_color_picker"
+            />
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
@@ -131,7 +238,7 @@ const GoogleAdsReport: React.FC = () => {
 
       <div className="max-w-6xl mx-auto p-8 space-y-8">
         {/* Performance Overview Metrics */}
-        <section className="report-card p-6">
+        <section className="report-card p-6 page-break-avoid">
           <h2 className="text-xl font-semibold text-report-header mb-6">Performance Overview</h2>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
             <div className="metric-card text-center">
@@ -186,7 +293,7 @@ const GoogleAdsReport: React.FC = () => {
         </section>
 
         {/* Trends & Charts */}
-        <section className="report-card p-6 page-break">
+        <section className="report-card p-6 page-break page-break-avoid">
           <h2 className="text-xl font-semibold text-report-header mb-6">Performance Trends</h2>
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             <div>
@@ -217,7 +324,7 @@ const GoogleAdsReport: React.FC = () => {
         </section>
 
         {/* Campaign Performance Table */}
-        <section className="report-card p-6">
+        <section className="report-card p-6 page-break-avoid">
           <h2 className="text-xl font-semibold text-report-header mb-6">Top Campaigns Performance</h2>
           <div className="overflow-x-auto">
             <table className="data-table" id="campaign_performance_table">
@@ -251,7 +358,7 @@ const GoogleAdsReport: React.FC = () => {
         </section>
 
         {/* Analyst Notes - Editable Section */}
-        <section className="report-card p-6">
+        <section className="report-card p-6 page-break-avoid">
           <h2 className="text-xl font-semibold text-report-header mb-6">Analyst Notes</h2>
           <div 
             className="editable-content"
@@ -268,46 +375,74 @@ const GoogleAdsReport: React.FC = () => {
         </section>
 
         {/* Summary and Recommendations */}
-        <section className="report-card p-6 page-break">
+        <section className="report-card p-6 page-break page-break-avoid">
           <h2 className="text-xl font-semibold text-report-header mb-6">Summary & Recommendations</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
             <div className="metric-card border-l-4 border-l-success">
               <h3 className="font-semibold text-success mb-2">Key Wins</h3>
-              <ul className="text-sm space-y-1" id="key_wins">
-                <li>• ROAS exceeded target by 20%</li>
-                <li>• Brand campaigns achieved 5.2x ROAS</li>
-                <li>• Conversion rate improved 15% MoM</li>
-              </ul>
+              <div 
+                className="editable-list text-sm"
+                contentEditable
+                suppressContentEditableWarning={true}
+                onBlur={(e) => {
+                  const content = e.currentTarget.textContent || '';
+                  setKeyWins(content.split('\n').filter(line => line.trim()));
+                }}
+                id="key_wins"
+              >
+                {keyWins.map(win => `• ${win}`).join('\n')}
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">Click to edit</p>
             </div>
             
             <div className="metric-card border-l-4 border-l-info">
               <h3 className="font-semibold text-info mb-2">Key Learnings</h3>
-              <ul className="text-sm space-y-1" id="key_learnings">
-                <li>• Search campaigns outperform display 2:1</li>
-                <li>• Mobile traffic converts 25% better</li>
-                <li>• Video ads show strong engagement</li>
-              </ul>
+              <div 
+                className="editable-list text-sm"
+                contentEditable
+                suppressContentEditableWarning={true}
+                onBlur={(e) => {
+                  const content = e.currentTarget.textContent || '';
+                  setKeyLearnings(content.split('\n').filter(line => line.trim()));
+                }}
+                id="key_learnings"
+              >
+                {keyLearnings.map(learning => `• ${learning}`).join('\n')}
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">Click to edit</p>
             </div>
             
             <div className="metric-card border-l-4 border-l-warning">
               <h3 className="font-semibold text-warning mb-2">Improvement Areas</h3>
-              <ul className="text-sm space-y-1" id="improvement_areas">
-                <li>• Optimize display creative assets</li>
-                <li>• Expand high-performing keywords</li>
-                <li>• Test new audience segments</li>
-              </ul>
+              <div 
+                className="editable-list text-sm"
+                contentEditable
+                suppressContentEditableWarning={true}
+                onBlur={(e) => {
+                  const content = e.currentTarget.textContent || '';
+                  setImprovementAreas(content.split('\n').filter(line => line.trim()));
+                }}
+                id="improvement_areas"
+              >
+                {improvementAreas.map(area => `• ${area}`).join('\n')}
+              </div>
+              <p className="text-xs text-muted-foreground mt-1">Click to edit</p>
             </div>
           </div>
           
           <div className="bg-accent/10 border border-accent/20 rounded-lg p-4">
             <h3 className="font-semibold text-accent mb-2">🎯 Next Steps & Strategic Actions</h3>
-            <div className="text-sm space-y-1" id="next_steps">
-              <p>• Increase budget allocation to Brand and Competitor search campaigns (+30%)</p>
-              <p>• Launch A/B test for new video ad creative concepts</p>
-              <p>• Implement enhanced conversion tracking for better attribution</p>
-              <p>• Schedule weekly performance reviews for optimization opportunities</p>
+            <div 
+              className="editable-content text-sm"
+              contentEditable
+              suppressContentEditableWarning={true}
+              onBlur={(e) => setNextSteps(e.currentTarget.textContent || '')}
+              id="next_steps"
+            >
+              {nextSteps}
             </div>
+            <p className="text-xs text-muted-foreground mt-1">Click to edit strategic actions</p>
           </div>
         </section>
 
@@ -338,79 +473,88 @@ const GoogleAdsReport: React.FC = () => {
         </div>
       </footer>
 
-      {/* API Integration Script Template */}
+      {/* Load data on component mount */}
       <script type="text/javascript" dangerouslySetInnerHTML={{
         __html: `
-        /* 
-        // API Integration Template - Uncomment and modify for dynamic data loading
-        
-        // Example: Fetch performance metrics
-        async function loadPerformanceData() {
-          try {
-            const response = await fetch('/api/google-ads/performance', {
-              method: 'GET',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer YOUR_API_TOKEN'
-              }
-            });
-            const data = await response.json();
-            
-            // Update metric displays
-            document.getElementById('metric_clicks').textContent = data.clicks.toLocaleString();
-            document.getElementById('metric_impressions').textContent = data.impressions.toLocaleString();
-            document.getElementById('metric_ctr').textContent = data.ctr.toFixed(2) + '%';
-            // ... update other metrics
-            
-          } catch (error) {
-            console.error('Failed to load performance data:', error);
+        // API Integration - Ready for implementation
+        window.reportAPI = {
+          // Load performance metrics from Google Ads API
+          async loadPerformanceData() {
+            try {
+              const response = await fetch('/api/google-ads/performance', {
+                method: 'GET',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': 'Bearer ' + (process.env.GOOGLE_ADS_API_TOKEN || 'YOUR_API_TOKEN')
+                }
+              });
+              
+              if (!response.ok) throw new Error('Failed to fetch performance data');
+              return await response.json();
+              
+            } catch (error) {
+              console.error('API Error - Performance data:', error);
+              return null;
+            }
+          },
+
+          // Load campaign data from Google Ads API  
+          async loadCampaignData() {
+            try {
+              const response = await fetch('/api/google-ads/campaigns', {
+                headers: {
+                  'Authorization': 'Bearer ' + (process.env.GOOGLE_ADS_API_TOKEN || 'YOUR_API_TOKEN')
+                }
+              });
+              
+              if (!response.ok) throw new Error('Failed to fetch campaign data');
+              return await response.json();
+              
+            } catch (error) {
+              console.error('API Error - Campaign data:', error);
+              return null;
+            }
+          },
+
+          // Load chart/trend data
+          async loadChartData() {
+            try {
+              const response = await fetch('/api/google-ads/charts', {
+                headers: {
+                  'Authorization': 'Bearer ' + (process.env.GOOGLE_ADS_API_TOKEN || 'YOUR_API_TOKEN')
+                }
+              });
+              
+              if (!response.ok) throw new Error('Failed to fetch chart data');
+              return await response.json();
+              
+            } catch (error) {
+              console.error('API Error - Chart data:', error);
+              return null;
+            }
+          },
+
+          // Save report data (for editable content)
+          async saveReportData(reportData) {
+            try {
+              const response = await fetch('/api/reports/save', {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                  'Authorization': 'Bearer ' + (process.env.API_TOKEN || 'YOUR_API_TOKEN')
+                },
+                body: JSON.stringify(reportData)
+              });
+              
+              if (!response.ok) throw new Error('Failed to save report');
+              return await response.json();
+              
+            } catch (error) {
+              console.error('API Error - Save report:', error);
+              return null;
+            }
           }
-        }
-        
-        // Example: Fetch campaign data
-        async function loadCampaignData() {
-          try {
-            const response = await fetch('/api/google-ads/campaigns');
-            const campaigns = await response.json();
-            
-            const tableBody = document.getElementById('campaign_data_rows');
-            tableBody.innerHTML = campaigns.map(campaign => \`
-              <tr>
-                <td class="font-medium">\${campaign.name}</td>
-                <td class="text-right">$\${campaign.spend.toFixed(2)}</td>
-                <td class="text-right">\${campaign.impressions.toLocaleString()}</td>
-                <td class="text-right">\${campaign.ctr.toFixed(2)}%</td>
-                <td class="text-right">\${campaign.conversions}</td>
-                <td class="text-right font-semibold text-success">\${campaign.roas.toFixed(1)}x</td>
-              </tr>
-            \`).join('');
-            
-          } catch (error) {
-            console.error('Failed to load campaign data:', error);
-          }
-        }
-        
-        // Example: Load chart data
-        async function loadChartData() {
-          try {
-            const response = await fetch('/api/google-ads/charts');
-            const chartData = await response.json();
-            
-            // Initialize chart library (Chart.js, D3, etc.)
-            // Replace chart placeholders with actual charts
-            
-          } catch (error) {
-            console.error('Failed to load chart data:', error);
-          }
-        }
-        
-        // Initialize all data loading on page load
-        document.addEventListener('DOMContentLoaded', function() {
-          loadPerformanceData();
-          loadCampaignData();
-          loadChartData();
-        });
-        */
+        };
         `
       }} />
     </div>

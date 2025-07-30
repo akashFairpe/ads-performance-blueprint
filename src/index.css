@@ -127,6 +127,12 @@ All colors MUST be HSL.
   @media print {
     .page-break {
       page-break-before: always;
+      margin-top: 0;
+    }
+    
+    .page-break-avoid {
+      page-break-inside: avoid;
+      break-inside: avoid;
     }
     
     .no-print {
@@ -136,6 +142,25 @@ All colors MUST be HSL.
     .print-full-width {
       width: 100% !important;
       max-width: none !important;
+    }
+    
+    body {
+      -webkit-print-color-adjust: exact;
+      color-adjust: exact;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+    
+    h1 { font-size: 20px; }
+    h2 { font-size: 16px; }
+    h3 { font-size: 14px; }
+    
+    .metric-card {
+      margin-bottom: 8px;
+    }
+    
+    .report-card {
+      margin-bottom: 16px;
     }
   }
 }
@@ -179,6 +204,27 @@ All colors MUST be HSL.
   }
   
   .editable-content {
-    @apply min-h-[100px] p-4 border border-border rounded-lg bg-card focus:outline-none focus:ring-2 focus:ring-ring;
+    @apply min-h-[100px] p-4 border border-dashed border-border rounded-lg;
+    @apply focus:outline-none focus:border-primary focus:bg-card/50;
+    @apply transition-all duration-200;
+    background-color: hsl(var(--card));
+    color: hsl(var(--card-foreground));
+  }
+
+  .editable-list {
+    @apply min-h-[80px] p-3 border border-dashed border-border rounded-lg;
+    @apply focus:outline-none focus:border-primary focus:bg-card/50;
+    @apply transition-all duration-200;
+    background-color: hsl(var(--card));
+  }
+
+  .editable-header {
+    @apply focus:outline-none focus:bg-primary/10 focus:rounded px-2 py-1;
+    @apply transition-all duration-200;
+  }
+
+  .brand-color-picker {
+    @apply w-12 h-12 rounded-lg border-2 border-border cursor-pointer;
+    @apply hover:scale-105 transition-transform duration-200;
   }
 }

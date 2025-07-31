@@ -191,56 +191,48 @@ const AdGroupReport: React.FC = () => {
           {/* Overview KPI Grid */}
           <div className="kpi-dashboard-grid" style={{ marginBottom: 'var(--section-spacing)' }}>
             <div className="dashboard-kpi">
-              <div className="kpi-icon">📁</div>
               <div className="kpi-value" id="kpi_total_ad_groups">{adGroupMetrics.totalAdGroups}</div>
               <div className="kpi-label">Total Ad Groups</div>
               <div className="kpi-change positive">↗ +2 this month</div>
             </div>
             
             <div className="dashboard-kpi">
-              <div className="kpi-icon">💰</div>
               <div className="kpi-value" id="kpi_total_spend">{formatCurrency(adGroupMetrics.totalSpend)}</div>
               <div className="kpi-label">Total Spend</div>
               <div className="kpi-change positive">↗ +12.4%</div>
             </div>
             
             <div className="dashboard-kpi">
-              <div className="kpi-icon">👆</div>
               <div className="kpi-value" id="kpi_total_clicks">{formatNumber(adGroupMetrics.totalClicks)}</div>
               <div className="kpi-label">Total Clicks</div>
               <div className="kpi-change positive">↗ +8.7%</div>
             </div>
             
             <div className="dashboard-kpi">
-              <div className="kpi-icon">🎯</div>
               <div className="kpi-value" id="kpi_total_conversions">{formatNumber(adGroupMetrics.totalConversions)}</div>
               <div className="kpi-label">Total Conversions</div>
               <div className="kpi-change positive">↗ +15.3%</div>
             </div>
 
             <div className="dashboard-kpi">
-              <div className="kpi-icon">📊</div>
               <div className="kpi-value" id="kpi_avg_ctr">{formatPercentage(adGroupMetrics.avgCtr)}</div>
               <div className="kpi-label">Avg CTR</div>
               <div className="kpi-change positive">↗ +0.3%</div>
             </div>
             
             <div className="dashboard-kpi">
-              <div className="kpi-icon">💵</div>
               <div className="kpi-value" id="kpi_avg_cpc">{formatCurrency(adGroupMetrics.avgCpc)}</div>
               <div className="kpi-label">Avg CPC</div>
               <div className="kpi-change negative">↘ -0.08%</div>
             </div>
             
             <div className="dashboard-kpi">
-              <div className="kpi-icon">📈</div>
               <div className="kpi-value" id="kpi_avg_roas">{adGroupMetrics.avgRoas}x</div>
               <div className="kpi-label">Avg ROAS</div>
               <div className="kpi-change positive">↗ +18.2%</div>
             </div>
 
             <div className="dashboard-kpi">
-              <div className="kpi-icon">⏱️</div>
               <div className="kpi-value" id="kpi_spend_pacing">{formatPercentage(adGroupMetrics.spendPacing)}</div>
               <div className="kpi-label">Budget Pacing</div>
               <div className="kpi-change positive">On Track</div>

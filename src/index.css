@@ -255,27 +255,6 @@ body {
   position: absolute;
   inset: 0;
   opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.dashboard-kpi:hover::before {
-  opacity: 0.05;
-}
-
-.dashboard-kpi:nth-child(1)::before { 
-  background: var(--kpi-gradient-blue); 
-}
-
-.dashboard-kpi:nth-child(2)::before { 
-  background: var(--kpi-gradient-green); 
-}
-
-.dashboard-kpi:nth-child(3)::before { 
-  background: var(--kpi-gradient-orange); 
-}
-
-.dashboard-kpi:nth-child(4)::before { 
-  background: var(--kpi-gradient-purple); 
 }
 
 .kpi-icon {
@@ -284,7 +263,6 @@ body {
   right: 16px;
   font-size: 1.875rem;
   opacity: 0.2;
-  transition: opacity 0.3s ease;
 }
 
 .dashboard-kpi:hover .kpi-icon {

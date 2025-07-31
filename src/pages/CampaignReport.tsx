@@ -135,10 +135,19 @@ const CampaignReport: React.FC = () => {
               </div>
               
               <div className="no-print">
-                <button className="btn btn-primary" onClick={exportToPDF} style={{ marginRight: '12px' }}>
+                <button 
+                  className="btn btn-primary" 
+                  onClick={exportToPDF} 
+                  style={{ marginRight: '12px' }}
+                  type="button"
+                >
                   Export PDF
                 </button>
-                <button className="btn btn-secondary">
+                <button 
+                  className="btn btn-secondary"
+                  type="button"
+                  onClick={() => window.location.reload()}
+                >
                   Share Report
                 </button>
               </div>

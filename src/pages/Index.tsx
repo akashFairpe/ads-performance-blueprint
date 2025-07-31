@@ -1,42 +1,55 @@
 import { Link } from "react-router-dom";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 const Index = () => {
   return (
-    <div className="min-h-screen bg-background p-8">
-      <div className="max-w-4xl mx-auto">
-        <h1 className="text-4xl font-bold text-center mb-8">Google Ads Reports Dashboard</h1>
-        
-        <div className="grid md:grid-cols-2 gap-6">
-          <Card>
-            <CardHeader>
-              <CardTitle>Account Performance Report</CardTitle>
-              <CardDescription>
-                Comprehensive overview of your Google Ads account performance metrics
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Link to="/account-report">
-                <Button className="w-full">View Account Report</Button>
-              </Link>
-            </CardContent>
-          </Card>
+    <div className="dashboard-container">
+      <div className="dashboard-wrapper">
+        <header className="dashboard-header">
+          <div className="dashboard-header-content">
+            <h1 className="dashboard-title">Google Ads Report Suite</h1>
+            <p className="dashboard-subtitle">Professional reporting tools for Google Ads performance analysis</p>
+          </div>
+        </header>
 
-          <Card>
-            <CardHeader>
-              <CardTitle>Campaign Performance Report</CardTitle>
-              <CardDescription>
-                Detailed analysis of individual campaign performance and optimization recommendations
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Link to="/campaign-report">
-                <Button className="w-full">View Campaign Report</Button>
+        <section>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '24px', color: 'var(--report-header)' }}>
+            Available Reports
+          </h2>
+          
+          <div style={{ display: 'grid', gap: '24px', gridTemplateColumns: 'repeat(auto-fit, minmax(400px, 1fr))' }}>
+            <div className="dashboard-summary-card">
+              <h3 className="summary-card-title">
+                📊 Account Performance Report
+              </h3>
+              <p style={{ color: 'var(--muted-foreground)', marginBottom: '16px' }}>
+                Comprehensive overview of your Google Ads account performance with KPIs, charts, and insights.
+              </p>
+              <Link 
+                to="/account-report" 
+                className="btn btn-primary"
+                style={{ width: '100%', textDecoration: 'none', display: 'block', textAlign: 'center' }}
+              >
+                View Account Report
               </Link>
-            </CardContent>
-          </Card>
-        </div>
+            </div>
+
+            <div className="dashboard-summary-card">
+              <h3 className="summary-card-title">
+                🎯 Campaign Performance Report
+              </h3>
+              <p style={{ color: 'var(--muted-foreground)', marginBottom: '16px' }}>
+                Detailed analysis of individual campaign performance with metrics and recommendations.
+              </p>
+              <Link 
+                to="/campaign-report" 
+                className="btn btn-primary"
+                style={{ width: '100%', textDecoration: 'none', display: 'block', textAlign: 'center' }}
+              >
+                View Campaign Report
+              </Link>
+            </div>
+          </div>
+        </section>
       </div>
     </div>
   );

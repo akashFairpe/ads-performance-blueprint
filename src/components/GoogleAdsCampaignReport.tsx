@@ -1,18 +1,13 @@
 import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
-import { Button } from './ui/button';
 
 const GoogleAdsCampaignReport = () => {
-  // Header customization state (same as Account report for uniformity)
+  // Header customization state
   const [reportTitle, setReportTitle] = useState('Google Ads Campaign Performance Report');
   const [dateRange, setDateRange] = useState('Jan 1, 2024 - Jan 31, 2024');
   const [clientName, setClientName] = useState('[Client Name]');
   const [accountId, setAccountId] = useState('[Account ID]');
   const [reportId, setReportId] = useState('RPT-' + Math.random().toString(36).substr(2, 9).toUpperCase());
   const [generatedDate, setGeneratedDate] = useState(new Date().toLocaleDateString());
-  const [brandColor, setBrandColor] = useState('#3b82f6');
-  const [logoImage, setLogoImage] = useState<string | null>(null);
-  const [companyLogo, setCompanyLogo] = useState('[Company Name]');
 
   // Sample campaign data with API markers
   const campaignData = [
@@ -49,540 +44,385 @@ const GoogleAdsCampaignReport = () => {
       clicks: 5670,
       impressions: 89200,
       ctr: 6.35,
-      avgCpc: 0.95,
+      avgCpc: 1.89,
       conversions: 89,
       conversionRate: 1.57,
-      cost: 5386.50,
+      cost: 10716.30,
       roas: 4.1
     },
     {
       id: 'camp_4',
-      name: 'Search - Competitor Terms',
+      name: 'Holiday Shopping Promo',
       status: 'Paused',
       clicks: 3240,
-      impressions: 78900,
-      ctr: 4.11,
-      avgCpc: 1.85,
-      conversions: 32,
-      conversionRate: 0.99,
-      cost: 5994.00,
-      roas: 1.2
-    },
-    {
-      id: 'camp_5',
-      name: 'Display - Lookalike Audience',
-      status: 'Active',
-      clicks: 7890,
-      impressions: 456700,
-      ctr: 1.73,
-      avgCpc: 0.75,
-      conversions: 67,
-      conversionRate: 0.85,
-      cost: 5917.50,
-      roas: 2.1
+      impressions: 67800,
+      ctr: 4.78,
+      avgCpc: 1.67,
+      conversions: 45,
+      conversionRate: 1.39,
+      cost: 5410.80,
+      roas: 2.2
     }
   ];
 
-  // Logo upload handling
-  const handleLogoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      // Validate file size (max 2MB)
-      if (file.size > 2 * 1024 * 1024) {
-        alert('File size must be less than 2MB');
-        return;
-      }
-      
-      // Validate file type
-      if (!file.type.startsWith('image/')) {
-        alert('Please upload an image file');
-        return;
-      }
+  // Insight commentary states
+  const [executiveSummary, setExecutiveSummary] = useState(
+    "Our campaign portfolio demonstrates strong performance with average ROAS of 3.1x. Brand Awareness Q1 and Retargeting campaigns are exceeding benchmarks, while Product Launch requires optimization focus. Holiday campaigns have been paused for strategic realignment."
+  );
 
-      // Create image to check dimensions
-      const img = new Image();
-      const reader = new FileReader();
-      
-      reader.onload = (e) => {
-        img.onload = () => {
-          // Recommend dimensions but don't strictly enforce
-          if (img.width > 1000 || img.height > 1000) {
-            if (!confirm('Image is quite large. For best results, use images smaller than 1000x1000px. Continue anyway?')) {
-              return;
-            }
-          }
-          setLogoImage(e.target?.result as string);
-        };
-        img.src = e.target?.result as string;
-      };
-      
-      reader.readAsDataURL(file);
-    }
+  const [recommendations, setRecommendations] = useState([
+    "Increase budget allocation to Retargeting - High Value campaign by 25%",
+    "Pause underperforming keywords in Product Launch Campaign",
+    "Implement dayparting optimization for Brand Awareness campaigns",
+    "Test new ad copy variations for improved CTR",
+    "Resume Holiday Shopping with refined targeting parameters"
+  ]);
+
+  // Format helper functions
+  const formatCurrency = (amount: number) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD'
+    }).format(amount);
   };
 
-  const removeLogo = () => {
-    setLogoImage(null);
+  const formatNumber = (num: number) => {
+    return new Intl.NumberFormat('en-US').format(num);
   };
 
-  // Formatting functions
-  const formatCurrency = (amount: number) => `$${amount.toLocaleString()}`;
-  const formatNumber = (num: number) => num.toLocaleString();
-  const formatPercentage = (rate: number) => `${rate.toFixed(2)}%`;
+  const formatPercentage = (num: number) => {
+    return `${num.toFixed(2)}%`;
+  };
+
+  const exportToPDF = () => {
+    window.print();
+  };
+
+  // API helper function placeholders
+  const fetchCampaignData = async () => {
+    // Placeholder for API integration
+    console.log('Fetching campaign data...');
+  };
 
   return (
     <div className="dashboard-container">
       <div className="dashboard-wrapper">
-        {/* Modern Dashboard Header */}
-        <div className="dashboard-header">
-          <div className="flex items-center justify-between mb-6">
-            <div className="flex items-center space-x-6">
-              <div className="relative group">
-                {logoImage ? (
-                  <div className="relative">
-                    <img 
-                      src={logoImage} 
-                      alt="Company Logo" 
-                      className="w-16 h-16 object-contain rounded-lg shadow-sm"
-                    />
-                    <button
-                      onClick={removeLogo}
-                      className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full text-xs hover:bg-red-600 print:hidden"
-                    >
-                      ×
-                    </button>
-                  </div>
-                ) : (
-                  <div className="space-y-2">
-                    <input
-                      type="text"
-                      value={companyLogo}
-                      onChange={(e) => setCompanyLogo(e.target.value)}
-                      className="editable-field font-bold text-lg"
-                      placeholder="Company Name"
-                    />
-                    <div className="print:hidden">
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={handleLogoUpload}
-                        className="hidden"
-                        id="logo-upload"
-                      />
-                      <label htmlFor="logo-upload" className="text-xs text-blue-600 cursor-pointer hover:underline">
-                        Upload Logo
-                      </label>
-                      <p className="text-xs text-muted-foreground">Max 2MB, recommended 512x512px</p>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-            
-            <div className="text-right space-y-1">
-              <div className="print:hidden">
-                <label className="text-xs text-muted-foreground">Brand Color:</label>
-                <input
-                  type="color"
-                  value={brandColor}
-                  onChange={(e) => setBrandColor(e.target.value)}
-                  className="ml-2 w-8 h-6 rounded border"
-                />
-              </div>
-              <div className="text-sm text-muted-foreground">
-                Report ID: 
-                <span 
-                  contentEditable
-                  suppressContentEditableWarning
-                  onBlur={(e) => setReportId(e.target.textContent || reportId)}
-                  className="editable-field ml-1"
-                >
-                  {reportId}
-                </span>
-              </div>
-              <div className="text-sm text-muted-foreground">
-                Generated: 
-                <span 
-                  contentEditable
-                  suppressContentEditableWarning
-                  onBlur={(e) => setGeneratedDate(e.target.textContent || generatedDate)}
-                  className="editable-field ml-1"
-                >
-                  {generatedDate}
-                </span>
-              </div>
-            </div>
-          </div>
-
-          <div className="text-center space-y-2">
+        {/* Report Header */}
+        <header className="dashboard-header">
+          <div className="dashboard-header-content">
             <h1 
+              className="dashboard-title"
               contentEditable
               suppressContentEditableWarning
-              onBlur={(e) => setReportTitle(e.target.textContent || reportTitle)}
-              className="editable-field text-3xl font-bold"
-              style={{ color: brandColor }}
+              onBlur={(e) => setReportTitle(e.target.textContent || '')}
             >
               {reportTitle}
             </h1>
+            <div 
+              className="dashboard-subtitle"
+              contentEditable
+              suppressContentEditableWarning
+              onBlur={(e) => setDateRange(e.target.textContent || '')}
+            >
+              Analysis Period: {dateRange}
+            </div>
+            <div className="dashboard-date">
+              <strong>Client:</strong> 
+              <span 
+                contentEditable
+                suppressContentEditableWarning
+                onBlur={(e) => setClientName(e.target.textContent || '')}
+              >
+                {clientName}
+              </span> | 
+              <strong>Account:</strong> 
+              <span 
+                contentEditable
+                suppressContentEditableWarning
+                onBlur={(e) => setAccountId(e.target.textContent || '')}
+              >
+                {accountId}
+              </span> | 
+              <strong>Report ID:</strong> {reportId} | 
+              <strong>Generated:</strong> {generatedDate}
+            </div>
+            <div style={{ marginTop: '16px' }}>
+              <button className="btn btn-primary" onClick={exportToPDF} style={{ marginRight: '12px' }}>
+                Export PDF
+              </button>
+              <button className="btn btn-secondary" onClick={fetchCampaignData}>
+                Refresh Data
+              </button>
+            </div>
+          </div>
+        </header>
+
+        {/* Campaign Overview KPIs */}
+        <section>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '24px', color: 'var(--report-header)' }}>
+            Campaign Portfolio Overview
+          </h2>
+          <div className="kpi-dashboard-grid">
+            <div className="dashboard-kpi">
+              <div className="kpi-icon">🎯</div>
+              <div className="kpi-value">4</div>
+              <div className="kpi-label">Active Campaigns</div>
+              <div className="kpi-change positive">↗ +1 this month</div>
+            </div>
             
-            <div className="flex justify-center items-center space-x-8 text-muted-foreground">
-              <div>
-                <span className="font-medium">Period: </span>
-                <span 
-                  contentEditable
-                  suppressContentEditableWarning
-                  onBlur={(e) => setDateRange(e.target.textContent || dateRange)}
-                  className="editable-field"
-                >
-                  {dateRange}
-                </span>
-              </div>
-              <div>
-                <span className="font-medium">Client: </span>
-                <span 
-                  contentEditable
-                  suppressContentEditableWarning
-                  onBlur={(e) => setClientName(e.target.textContent || clientName)}
-                  className="editable-field"
-                >
-                  {clientName}
-                </span>
-              </div>
-              <div>
-                <span className="font-medium">Account: </span>
-                <span 
-                  contentEditable
-                  suppressContentEditableWarning
-                  onBlur={(e) => setAccountId(e.target.textContent || accountId)}
-                  className="editable-field"
-                >
-                  {accountId}
-                </span>
-              </div>
+            <div className="dashboard-kpi">
+              <div className="kpi-icon">💰</div>
+              <div className="kpi-value">{formatCurrency(campaignData.reduce((sum, camp) => sum + camp.cost, 0))}</div>
+              <div className="kpi-label">Total Spend</div>
+              <div className="kpi-change negative">↘ -5.2%</div>
             </div>
-          </div>
-        </div>
-
-        {/* Campaign Performance Overview Table */}
-        <section className="page-break-avoid">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-1 h-8 bg-gradient-to-b from-blue-500 to-purple-500 rounded-full"></div>
-            <h2 className="text-2xl font-bold text-gray-800">📊 Campaign Performance Overview</h2>
-          </div>
-          <div className="dashboard-chart-card glow-effect">
-            <div className="chart-card-content">
-              <div className="overflow-x-auto">
-                <table className="dashboard-table">
-                  <thead>
-                    <tr>
-                      <th>Campaign Name</th>
-                      <th>Status</th>
-                      <th>Clicks</th>
-                      <th>Impressions</th>
-                      <th>CTR</th>
-                      <th>Avg. CPC</th>
-                      <th>Conversions</th>
-                      <th>Conv. Rate</th>
-                      <th>Cost</th>
-                      <th>ROAS</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {campaignData.map((campaign, index) => (
-                      <tr key={campaign.id}>
-                        <td id={`${campaign.id}_name`} className="font-medium">{campaign.name}</td>
-                        <td id={`${campaign.id}_status`}>
-                          <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-                            campaign.status === 'Active' 
-                              ? 'bg-green-100 text-green-800' 
-                              : 'bg-red-100 text-red-800'
-                          }`}>
-                            {campaign.status}
-                          </span>
-                        </td>
-                        <td id={`${campaign.id}_clicks`}>{formatNumber(campaign.clicks)}</td>
-                        <td id={`${campaign.id}_impressions`}>{formatNumber(campaign.impressions)}</td>
-                        <td id={`${campaign.id}_ctr`}>{formatPercentage(campaign.ctr)}</td>
-                        <td id={`${campaign.id}_avgcpc`}>{formatCurrency(campaign.avgCpc)}</td>
-                        <td id={`${campaign.id}_conversions`}>{formatNumber(campaign.conversions)}</td>
-                        <td id={`${campaign.id}_convrate`}>{formatPercentage(campaign.conversionRate)}</td>
-                        <td id={`${campaign.id}_cost`}>{formatCurrency(campaign.cost)}</td>
-                        <td id={`${campaign.id}_roas`}>{campaign.roas.toFixed(1)}x</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+            
+            <div className="dashboard-kpi">
+              <div className="kpi-icon">🔄</div>
+              <div className="kpi-value">{campaignData.reduce((sum, camp) => sum + camp.conversions, 0)}</div>
+              <div className="kpi-label">Total Conversions</div>
+              <div className="kpi-change positive">↗ +14.8%</div>
+            </div>
+            
+            <div className="dashboard-kpi">
+              <div className="kpi-icon">📈</div>
+              <div className="kpi-value">{(campaignData.reduce((sum, camp) => sum + camp.roas, 0) / campaignData.length).toFixed(1)}x</div>
+              <div className="kpi-label">Avg ROAS</div>
+              <div className="kpi-change positive">↗ +8.7%</div>
             </div>
           </div>
         </section>
 
-        {/* Charts Section */}
-        <section className="page-break-avoid mb-8">
-          <Card className="report-card">
-            <CardHeader>
-              <CardTitle className="text-xl font-semibold flex items-center">
-                📈 Campaign Trends & Analytics
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid md:grid-cols-2 gap-6">
-                <div className="chart-placeholder" id="chart_campaign_spend_conversion">
-                  <h4 className="font-medium mb-4">Spend vs Conversions by Campaign</h4>
-                  <div className="flex items-center justify-center h-64 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-                    <div className="text-center">
-                      <div className="text-4xl mb-2">📊</div>
-                      <p className="text-gray-600">Bar Chart: Campaign Spend vs Conversions</p>
-                      <p className="text-sm text-gray-500">Data will be injected via API</p>
-                    </div>
-                  </div>
-                </div>
-                
-                <div className="chart-placeholder" id="chart_campaign_impressions_clicks">
-                  <h4 className="font-medium mb-4">Daily Impressions & Clicks Trend</h4>
-                  <div className="flex items-center justify-center h-64 bg-gray-50 rounded-lg border-2 border-dashed border-gray-300">
-                    <div className="text-center">
-                      <div className="text-4xl mb-2">📈</div>
-                      <p className="text-gray-600">Line Chart: Daily Impressions & Clicks</p>
-                      <p className="text-sm text-gray-500">Data will be injected via API</p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-        </section>
-
-        {/* Individual Campaign Detail Cards */}
-        <section className="page-break-avoid mb-8">
-          <h2 className="text-2xl font-bold mb-6">📋 Individual Campaign Details</h2>
-          <div className="grid gap-6">
-            {campaignData.slice(0, 3).map((campaign) => (
-              <Card key={campaign.id} className="report-card">
-                <CardHeader>
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <CardTitle className="text-lg">{campaign.name}</CardTitle>
-                      <p className="text-sm text-muted-foreground">Campaign ID: {campaign.id.toUpperCase()}</p>
-                    </div>
-                    <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                      campaign.status === 'Active' 
-                        ? 'bg-green-100 text-green-800' 
-                        : 'bg-red-100 text-red-800'
-                    }`}>
+        {/* Individual Campaign Cards */}
+        <section>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '24px', color: 'var(--report-header)' }}>
+            Campaign Performance Details
+          </h2>
+          <div className="campaign-dashboard-grid">
+            {campaignData.map((campaign) => (
+              <div key={campaign.id} className="dashboard-campaign-card">
+                <div className="campaign-card-header">
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+                    <h3 style={{ fontSize: '1.125rem', fontWeight: '700', color: 'var(--report-header)', margin: 0 }}>
+                      {campaign.name}
+                    </h3>
+                    <span className={`campaign-status-badge ${campaign.status === 'Active' ? 'status-active' : 'status-paused'}`}>
                       {campaign.status}
                     </span>
                   </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div className="space-y-4">
-                      <div className="grid grid-cols-2 gap-4">
-                        <div className="metric-card">
-                          <div className="text-2xl font-bold text-primary">{formatNumber(campaign.clicks)}</div>
-                          <div className="text-sm text-muted-foreground">Clicks</div>
-                        </div>
-                        <div className="metric-card">
-                          <div className="text-2xl font-bold text-primary">{formatNumber(campaign.impressions)}</div>
-                          <div className="text-sm text-muted-foreground">Impressions</div>
-                        </div>
-                        <div className="metric-card">
-                          <div className="text-2xl font-bold text-primary">{formatCurrency(campaign.avgCpc)}</div>
-                          <div className="text-sm text-muted-foreground">Avg. CPC</div>
-                        </div>
-                        <div className="metric-card">
-                          <div className="text-2xl font-bold text-primary">{campaign.roas.toFixed(1)}x</div>
-                          <div className="text-sm text-muted-foreground">ROAS</div>
-                        </div>
-                      </div>
+                  <div style={{ fontSize: '0.875rem', color: 'var(--muted-foreground)' }}>
+                    Campaign ID: {campaign.id} | Cost: {formatCurrency(campaign.cost)}
+                  </div>
+                </div>
+                
+                <div className="campaign-card-content">
+                  <div className="campaign-metrics-grid">
+                    <div className="mini-dashboard-metric">
+                      <div className="mini-metric-value">{formatNumber(campaign.clicks)}</div>
+                      <div className="mini-metric-label">Clicks</div>
                     </div>
                     
-                    <div className="space-y-4">
-                      <div className="chart-placeholder h-32" id={`chart_${campaign.id}_trend`}>
-                        <div className="flex items-center justify-center h-full bg-gray-50 rounded border">
-                          <div className="text-center">
-                            <div className="text-2xl mb-1">📈</div>
-                            <p className="text-xs text-gray-600">Campaign Trend</p>
-                          </div>
-                        </div>
+                    <div className="mini-dashboard-metric">
+                      <div className="mini-metric-value">{formatNumber(campaign.impressions)}</div>
+                      <div className="mini-metric-label">Impressions</div>
+                    </div>
+                    
+                    <div className="mini-dashboard-metric">
+                      <div className="mini-metric-value">{formatPercentage(campaign.ctr)}</div>
+                      <div className="mini-metric-label">CTR</div>
+                    </div>
+                    
+                    <div className="mini-dashboard-metric">
+                      <div className="mini-metric-value" style={{ 
+                        color: campaign.roas >= 3 ? 'var(--dashboard-success)' : 'var(--dashboard-warning)' 
+                      }}>
+                        {campaign.roas}x
                       </div>
-                      
-                      <div className="editable-content" id={`${campaign.id}_commentary`}>
-                        <h5 className="font-medium mb-2">Analyst Notes:</h5>
-                        <div 
-                          contentEditable
-                          suppressContentEditableWarning
-                          className="min-h-[60px] p-3 border rounded-md text-sm"
-                        >
-                          Add your observations about this campaign performance, optimization opportunities, and strategic recommendations...
-                        </div>
+                      <div className="mini-metric-label">ROAS</div>
+                    </div>
+                  </div>
+                  
+                  <div style={{ marginTop: '16px', padding: '12px', background: 'rgba(249, 250, 251, 0.8)', borderRadius: '8px' }}>
+                    <div style={{ fontSize: '0.875rem', color: 'var(--muted-foreground)', marginBottom: '4px' }}>
+                      Performance Trend
+                    </div>
+                    <div className="whatagraph-chart-placeholder" id={`chart_${campaign.id}_trend`} style={{ height: '80px' }}>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)' }}>
+                        30-day trend for {campaign.name}
                       </div>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
+                </div>
+              </div>
             ))}
           </div>
         </section>
 
-        {/* Strategic Commentary */}
-        <section className="page-break-avoid mb-8">
-          <Card className="report-card">
-            <CardHeader>
-              <CardTitle className="text-xl font-semibold flex items-center">
-                💡 Strategic Commentary
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div 
-                contentEditable
-                suppressContentEditableWarning
-                className="editable-content min-h-[150px] p-4 border rounded-md"
-                id="strategic_commentary"
-              >
-                <p><strong>Campaign Performance Analysis:</strong></p>
-                <p>• Brand Awareness Q1 shows strong performance with 5.07% CTR and 3.2x ROAS</p>
-                <p>• Retargeting campaigns delivering highest ROAS at 4.1x</p>
-                <p>• Competitor terms campaign shows low ROAS (1.2x) - consider budget reallocation</p>
-                <br />
-                <p><strong>Key Insights:</strong></p>
-                <p>Add your strategic analysis and insights here...</p>
+        {/* Performance Analytics Charts */}
+        <section>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '24px', color: 'var(--report-header)' }}>
+            Campaign Analytics
+          </h2>
+          <div className="chart-dashboard-grid">
+            <div className="dashboard-chart-card">
+              <div className="chart-card-header">
+                <h3 className="chart-card-title">
+                  📊 ROAS Comparison
+                </h3>
+                <p className="chart-card-subtitle">Return on ad spend by campaign</p>
               </div>
-            </CardContent>
-          </Card>
+              <div className="chart-card-content">
+                <div className="whatagraph-chart-placeholder" id="chart_roas_comparison">
+                  <div className="chart-icon-large">📊</div>
+                  <div className="chart-description">
+                    <div className="chart-main-text">ROAS Comparison Chart</div>
+                    <div className="chart-sub-text">Compare return on investment across campaigns</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="dashboard-chart-card">
+              <div className="chart-card-header">
+                <h3 className="chart-card-title">
+                  💰 Budget Allocation
+                </h3>
+                <p className="chart-card-subtitle">Spend distribution pie chart</p>
+              </div>
+              <div className="chart-card-content">
+                <div className="pie-chart-placeholder" id="chart_budget_allocation">
+                  <div className="pie-visual">
+                    <div style={{ color: 'white', fontWeight: '600', textAlign: 'center' }}>
+                      <div>Budget</div>
+                      <div>Allocation</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </section>
 
-        {/* Summary and Optimization Recommendations */}
-        <section className="page-break-avoid mb-8">
-          <Card className="report-card">
-            <CardHeader>
-              <CardTitle className="text-xl font-semibold flex items-center">
-                🎯 Summary & Optimization Recommendations
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-6">
-              <div>
-                <h4 className="font-semibold text-green-700 mb-3">🚀 Top Performing Campaigns</h4>
-                <div 
-                  contentEditable
-                  suppressContentEditableWarning
-                  className="editable-content space-y-2"
-                  id="top_performers"
-                >
-                  <p>• <strong>Retargeting - High Value:</strong> Excellent 4.1x ROAS with 6.35% CTR</p>
-                  <p>• <strong>Brand Awareness Q1:</strong> Strong overall performance with balanced metrics</p>
-                  <p>• <strong>Product Launch Campaign:</strong> Good conversion volume with solid 2.8x ROAS</p>
-                </div>
-              </div>
+        {/* Detailed Performance Table */}
+        <section>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '24px', color: 'var(--report-header)' }}>
+            Detailed Campaign Metrics
+          </h2>
+          <div style={{ overflowX: 'auto' }}>
+            <table className="dashboard-table" id="detailed_campaign_table">
+              <thead>
+                <tr>
+                  <th>Campaign Name</th>
+                  <th>Status</th>
+                  <th>Impressions</th>
+                  <th>Clicks</th>
+                  <th>CTR</th>
+                  <th>Avg CPC</th>
+                  <th>Conversions</th>
+                  <th>Conv. Rate</th>
+                  <th>Cost</th>
+                  <th>ROAS</th>
+                </tr>
+              </thead>
+              <tbody>
+                {campaignData.map((campaign) => (
+                  <tr key={campaign.id}>
+                    <td style={{ fontWeight: '600' }}>{campaign.name}</td>
+                    <td>
+                      <span className={`campaign-status-badge ${campaign.status === 'Active' ? 'status-active' : 'status-paused'}`}>
+                        {campaign.status}
+                      </span>
+                    </td>
+                    <td>{formatNumber(campaign.impressions)}</td>
+                    <td>{formatNumber(campaign.clicks)}</td>
+                    <td>{formatPercentage(campaign.ctr)}</td>
+                    <td>{formatCurrency(campaign.avgCpc)}</td>
+                    <td>{formatNumber(campaign.conversions)}</td>
+                    <td>{formatPercentage(campaign.conversionRate)}</td>
+                    <td>{formatCurrency(campaign.cost)}</td>
+                    <td style={{ 
+                      fontWeight: '700',
+                      color: campaign.roas >= 3 ? 'var(--dashboard-success)' : 'var(--dashboard-warning)' 
+                    }}>
+                      {campaign.roas}x
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
 
-              <div>
-                <h4 className="font-semibold text-red-700 mb-3">⚠️ Campaigns Needing Attention</h4>
-                <div 
-                  contentEditable
-                  suppressContentEditableWarning
-                  className="editable-content space-y-2"
-                  id="attention_needed"
-                >
-                  <p>• <strong>Search - Competitor Terms:</strong> Low 1.2x ROAS, currently paused for optimization</p>
-                  <p>• <strong>Display - Lookalike Audience:</strong> Low CTR (1.73%) suggests audience refinement needed</p>
-                </div>
+        {/* Insights and Recommendations */}
+        <section>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '24px', color: 'var(--report-header)' }}>
+            Campaign Insights & Strategy
+          </h2>
+          <div className="summary-dashboard-grid">
+            <div className="dashboard-summary-card">
+              <h3 className="summary-card-title">
+                📋 Executive Summary
+              </h3>
+              <div 
+                className="dashboard-editable-content"
+                contentEditable
+                suppressContentEditableWarning
+                onBlur={(e) => setExecutiveSummary(e.target.textContent || '')}
+              >
+                {executiveSummary}
               </div>
+            </div>
 
-              <div className="bg-blue-50 border-l-4 border-blue-400 p-4 rounded-r-lg">
-                <h4 className="font-semibold text-blue-800 mb-3">📋 Next Steps & Strategic Actions</h4>
-                <div 
-                  contentEditable
-                  suppressContentEditableWarning
-                  className="editable-content space-y-2 text-blue-800"
-                  id="next_steps"
-                >
-                  <p>• Increase budget allocation to retargeting campaigns (highest ROAS)</p>
-                  <p>• A/B test new ad creative for display campaigns to improve CTR</p>
-                  <p>• Review and optimize competitor keyword strategy before reactivating</p>
-                  <p>• Implement dynamic remarketing for product launch campaign</p>
-                  <p>• Set up automated bid adjustments based on device and time performance</p>
-                </div>
+            <div className="dashboard-summary-card">
+              <h3 className="summary-card-title">
+                🎯 Strategic Recommendations
+              </h3>
+              <div className="summary-card-list">
+                {recommendations.map((rec, index) => (
+                  <div key={index} className="summary-card-item">
+                    <div className="summary-bullet"></div>
+                    <div>{rec}</div>
+                  </div>
+                ))}
               </div>
-            </CardContent>
-          </Card>
+            </div>
+
+            <div className="action-dashboard-card">
+              <h3 className="summary-card-title">
+                ⚡ Quick Actions
+              </h3>
+              <div style={{ marginTop: '16px' }}>
+                <button className="btn btn-primary" style={{ width: '100%', marginBottom: '8px' }}>
+                  Optimize Budgets
+                </button>
+                <button className="btn btn-outline" style={{ width: '100%', marginBottom: '8px' }}>
+                  Pause Low Performers
+                </button>
+                <button className="btn btn-secondary" style={{ width: '100%' }}>
+                  Schedule Review
+                </button>
+              </div>
+            </div>
+          </div>
         </section>
 
         {/* Footer */}
-        <footer className="report-footer mt-12 pt-6 border-t print:fixed print:bottom-0 print:left-0 print:right-0">
-          <div className="flex justify-between items-center text-sm text-muted-foreground">
-            <div className="space-x-4">
-              <span>Powered by AdSpyder</span>
-              <span>•</span>
-              <span>adspyder.com</span>
-              <span>•</span>
-              <span>support@adspyder.com</span>
-            </div>
-            <div>
-              Page <span className="page-number"></span>
-            </div>
+        <footer style={{ 
+          textAlign: 'center', 
+          marginTop: '48px', 
+          padding: '24px', 
+          borderTop: '1px solid var(--border)',
+          color: 'var(--muted-foreground)',
+          fontSize: '0.875rem'
+        }}>
+          <div style={{ marginBottom: '8px' }}>
+            <strong>Powered by AdSpyder</strong> | Advanced Campaign Analytics
+          </div>
+          <div>
+            Report ID: {reportId} | Generated: {generatedDate}
           </div>
         </footer>
       </div>
-
-      {/* API Integration Script Template */}
-      <script dangerouslySetInnerHTML={{
-        __html: `
-        // API Integration Template for Google Ads Campaign Performance Report
-        // Uncomment and modify these functions to connect with AdSpyder's API
-        
-        /*
-        async function loadCampaignData() {
-          try {
-            const response = await fetch('/api/campaigns?client_id=' + encodeURIComponent('${accountId}'));
-            const data = await response.json();
-            
-            // Update campaign table data
-            data.campaigns.forEach((campaign, index) => {
-              document.getElementById(campaign.id + '_name').textContent = campaign.name;
-              document.getElementById(campaign.id + '_status').textContent = campaign.status;
-              document.getElementById(campaign.id + '_clicks').textContent = campaign.clicks.toLocaleString();
-              document.getElementById(campaign.id + '_impressions').textContent = campaign.impressions.toLocaleString();
-              document.getElementById(campaign.id + '_ctr').textContent = campaign.ctr.toFixed(2) + '%';
-              document.getElementById(campaign.id + '_avgcpc').textContent = '$' + campaign.avgCpc.toFixed(2);
-              document.getElementById(campaign.id + '_conversions').textContent = campaign.conversions.toLocaleString();
-              document.getElementById(campaign.id + '_convrate').textContent = campaign.conversionRate.toFixed(2) + '%';
-              document.getElementById(campaign.id + '_cost').textContent = '$' + campaign.cost.toLocaleString();
-              document.getElementById(campaign.id + '_roas').textContent = campaign.roas.toFixed(1) + 'x';
-            });
-            
-            console.log('Campaign data loaded successfully');
-          } catch (error) {
-            console.error('Error loading campaign data:', error);
-          }
-        }
-        
-        async function loadChartData() {
-          try {
-            const response = await fetch('/api/campaigns/charts?client_id=' + encodeURIComponent('${accountId}'));
-            const chartData = await response.json();
-            
-            // Initialize Chart.js or ApexCharts here
-            // Example for Chart.js:
-            // const ctx = document.getElementById('chart_campaign_spend_conversion').getContext('2d');
-            // new Chart(ctx, {
-            //   type: 'bar',
-            //   data: chartData.spendVsConversions,
-            //   options: { responsive: true }
-            // });
-            
-            console.log('Chart data loaded successfully');
-          } catch (error) {
-            console.error('Error loading chart data:', error);
-          }
-        }
-        
-        // Call these functions when the page loads
-        // document.addEventListener('DOMContentLoaded', function() {
-        //   loadCampaignData();
-        //   loadChartData();
-        // });
-        */
-        `
-      }} />
     </div>
   );
 };

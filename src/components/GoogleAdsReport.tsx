@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import { Card } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 
 // Type definitions for API integration
 interface MetricData {
@@ -48,429 +46,222 @@ const GoogleAdsReport: React.FC = () => {
     "Strong performance this month with ROAS exceeding target by 20%. Brand campaigns continue to deliver the highest conversion rates. Recommend increasing budget allocation to top-performing search campaigns while optimizing display creative for better engagement."
   );
 
-  // Header editable fields
-  const [dateRange, setDateRange] = useState("November 1-30, 2024");
-  const [clientName, setClientName] = useState("TechCorp Solutions");
-  const [accountId, setAccountId] = useState("123-456-7890");
-  const [reportTitle, setReportTitle] = useState("Google Ads Account Performance Summary");
-  const [reportSubtitle, setReportSubtitle] = useState("Comprehensive advertising performance analysis");
-  const [companyLogo, setCompanyLogo] = useState("AS");
-  const [logoImage, setLogoImage] = useState<string | null>(null);
-  const [brandColor, setBrandColor] = useState("#3b82f6");
+  const [recommendations, setRecommendations] = useState([
+    "Increase budget allocation to Brand Campaign - Search (+30% budget)",
+    "Optimize Shopping campaign product feed for better performance",
+    "A/B test new creative variants for Display campaigns",
+    "Expand keyword targeting for high-converting search terms",
+    "Implement automated bidding strategies for efficiency"
+  ]);
+
+  const [reportTitle, setReportTitle] = useState('Google Ads Account Performance Report');
+  const [dateRange, setDateRange] = useState('Jan 1, 2024 - Jan 31, 2024');
+  const [clientName, setClientName] = useState('[Client Name]');
+  const [accountId, setAccountId] = useState('[Account ID]');
+  const [reportId, setReportId] = useState('RPT-' + Math.random().toString(36).substr(2, 9).toUpperCase());
   const [generatedDate, setGeneratedDate] = useState(new Date().toLocaleDateString());
-  const [reportId, setReportId] = useState(`RPT-${Date.now()}`);
 
-  // Summary sections
-  const [keyWins, setKeyWins] = useState([
-    "ROAS exceeded target by 20%",
-    "Brand campaigns achieved 5.2x ROAS", 
-    "Conversion rate improved 15% MoM"
-  ]);
-  const [keyLearnings, setKeyLearnings] = useState([
-    "Search campaigns outperform display 2:1",
-    "Mobile traffic converts 25% better",
-    "Video ads show strong engagement"
-  ]);
-  const [improvementAreas, setImprovementAreas] = useState([
-    "Optimize display creative assets",
-    "Expand high-performing keywords",
-    "Test new audience segments"
-  ]);
-  const [nextSteps, setNextSteps] = useState(
-    "• Increase budget allocation to Brand and Competitor search campaigns (+30%)\n• Launch A/B test for new video ad creative concepts\n• Implement enhanced conversion tracking for better attribution\n• Schedule weekly performance reviews for optimization opportunities"
-  );
-
-  // API Integration Functions
-  const fetchReportData = async () => {
+  // API Integration Helper Functions (for future implementation)
+  const fetchAccountData = async () => {
+    // Example API call structure
+    /*
     try {
-      const response = await fetch('/api/google-ads/performance', {
+      const response = await fetch('/api/google-ads/account-summary', {
         method: 'GET',
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${process.env.GOOGLE_ADS_API_TOKEN}`
+          'Authorization': 'Bearer ' + accessToken,
+          'Content-Type': 'application/json'
         }
       });
       const data = await response.json();
-      setReportData(data);
+      setReportData(data.metrics);
+      setCampaignData(data.campaigns);
     } catch (error) {
-      console.error('Failed to load performance data:', error);
+      console.error('Failed to fetch account data:', error);
     }
+    */
   };
 
-  const fetchCampaignData = async () => {
-    try {
-      const response = await fetch('/api/google-ads/campaigns');
-      const campaigns = await response.json();
-      setCampaignData(campaigns);
-    } catch (error) {
-      console.error('Failed to load campaign data:', error);
-    }
+  const exportToPDF = () => {
+    window.print();
   };
 
-  // Logo upload handler with validation
-  const handleLogoUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (!file) return;
-
-    // File size validation (max 2MB)
-    if (file.size > 2 * 1024 * 1024) {
-      alert('Logo file size must be less than 2MB');
-      return;
-    }
-
-    // File type validation
-    if (!file.type.startsWith('image/')) {
-      alert('Please upload a valid image file (PNG, JPG, SVG)');
-      return;
-    }
-
-    // Create image element to check dimensions
-    const img = new Image();
-    img.onload = () => {
-      // Dimension validation (recommended: square, max 512x512)
-      if (img.width > 512 || img.height > 512) {
-        alert('Logo dimensions should be maximum 512x512 pixels for best results');
-        return;
-      }
-
-      // If validation passes, create data URL
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setLogoImage(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
-    };
-    
-    img.src = URL.createObjectURL(file);
-  };
-
-  const removeLogo = () => {
-    setLogoImage(null);
-  };
-
-  const formatCurrency = (amount: number): string => {
+  const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', {
       style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 2
+      currency: 'USD'
     }).format(amount);
   };
 
-  const formatNumber = (num: number): string => {
+  const formatNumber = (num: number) => {
     return new Intl.NumberFormat('en-US').format(num);
   };
 
-  const formatPercentage = (num: number): string => {
+  const formatPercentage = (num: number) => {
     return `${num.toFixed(2)}%`;
   };
 
   return (
     <div className="dashboard-container">
       <div className="dashboard-wrapper">
-        {/* Modern Dashboard Header */}
-        <div className="dashboard-header">
-          <div className="flex justify-between items-start mb-6">
-            <div className="flex items-center space-x-6">
-              {/* Company Logo - Enhanced Upload */}
-              <div className="relative group">
-                <div 
-                  className="w-20 h-20 rounded-2xl flex items-center justify-center overflow-hidden border-2 border-gray-200/50 hover:border-blue-400 transition-all duration-300 cursor-pointer shadow-lg interactive-hover"
-                  style={{ backgroundColor: logoImage ? 'transparent' : brandColor }}
-                  onClick={() => document.getElementById('logo-upload')?.click()}
-                >
-                  {logoImage ? (
-                    <img 
-                      src={logoImage} 
-                      alt="Company Logo" 
-                      className="w-full h-full object-contain"
-                      id="company_logo_image"
-                    />
-                  ) : (
-                    <span className="text-white font-bold text-xl" id="company_logo_text">
-                      {companyLogo}
-                    </span>
-                  )}
-                  
-                  {/* Upload overlay */}
-                  <div className="absolute inset-0 bg-black/50 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center rounded-2xl">
-                    <span className="text-white text-xs font-medium">
-                      {logoImage ? 'Change' : 'Upload'}
-                    </span>
-                  </div>
-                </div>
-                
-                {/* Hidden file input */}
-                <input
-                  id="logo-upload"
-                  type="file"
-                  accept="image/*"
-                  onChange={handleLogoUpload}
-                  className="hidden"
-                />
-                
-                {/* Remove logo button */}
-                {logoImage && (
-                  <button
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      removeLogo();
-                    }}
-                    className="absolute -top-2 -right-2 w-6 h-6 bg-destructive text-destructive-foreground rounded-full flex items-center justify-center text-xs font-bold hover:scale-110 transition-transform no-print"
-                  >
-                    ×
-                  </button>
-                )}
-              </div>
-              
-              {/* Fallback text logo editor (when no image) */}
-              {!logoImage && (
-                <div className="text-xs text-muted-foreground no-print">
-                  <input
-                    type="text"
-                    value={companyLogo}
-                    onChange={(e) => setCompanyLogo(e.target.value)}
-                    className="w-12 text-center p-1 border border-border rounded bg-card"
-                    placeholder="Logo"
-                    maxLength={3}
-                  />
-                  <p className="mt-1">Text logo</p>
-                </div>
-              )}
-              
-              <div>
-                <h1 
-                  className="text-4xl font-bold dashboard-editable-field mb-2"
-                  style={{ color: brandColor }}
-                  contentEditable
-                  suppressContentEditableWarning={true}
-                  onBlur={(e) => setReportTitle(e.currentTarget.textContent || '')}
-                  id="report_title"
-                >
-                  {reportTitle}
-                </h1>
-                <p 
-                  className="text-gray-600 text-lg dashboard-editable-field"
-                  contentEditable
-                  suppressContentEditableWarning={true}
-                  onBlur={(e) => setReportSubtitle(e.currentTarget.textContent || '')}
-                  id="report_subtitle"
-                >
-                  {reportSubtitle}
-                </p>
-              </div>
+        {/* Report Header */}
+        <header className="dashboard-header">
+          <div className="dashboard-header-content">
+            <h1 
+              className="dashboard-title"
+              contentEditable
+              suppressContentEditableWarning
+              onBlur={(e) => setReportTitle(e.target.textContent || '')}
+            >
+              {reportTitle}
+            </h1>
+            <div 
+              className="dashboard-subtitle"
+              contentEditable
+              suppressContentEditableWarning
+              onBlur={(e) => setDateRange(e.target.textContent || '')}
+            >
+              Performance Period: {dateRange}
             </div>
-            <div className="text-right space-y-2">
-              <div className="no-print">
-                <label className="text-sm font-medium text-gray-600">Brand Color:</label>
-                <input
-                  type="color"
-                  value={brandColor}
-                  onChange={(e) => setBrandColor(e.target.value)}
-                  className="brand-color-picker ml-2"
-                  id="brand_color_picker"
-                />
-              </div>
-              <p className="text-sm text-gray-600">Generated: 
-                <span 
-                  className="dashboard-editable-field ml-1"
-                  contentEditable
-                  suppressContentEditableWarning={true}
-                  onBlur={(e) => setGeneratedDate(e.currentTarget.textContent || '')}
-                  id="generated_date"
-                >
-                  {generatedDate}
-                </span>
-              </p>
-              <p className="text-sm text-gray-600">Report ID: 
-                <span 
-                  className="dashboard-editable-field ml-1"
-                  contentEditable
-                  suppressContentEditableWarning={true}
-                  onBlur={(e) => setReportId(e.currentTarget.textContent || '')}
-                  id="report_id"
-                >
-                  {reportId}
-                </span>
-              </p>
+            <div className="dashboard-date">
+              <strong>Client:</strong> 
+              <span 
+                contentEditable
+                suppressContentEditableWarning
+                onBlur={(e) => setClientName(e.target.textContent || '')}
+              >
+                {clientName}
+              </span> | 
+              <strong>Account ID:</strong> 
+              <span 
+                contentEditable
+                suppressContentEditableWarning
+                onBlur={(e) => setAccountId(e.target.textContent || '')}
+              >
+                {accountId}
+              </span> | 
+              <strong>Report ID:</strong> {reportId} | 
+              <strong>Generated:</strong> {generatedDate}
+            </div>
+            <div style={{ marginTop: '16px' }}>
+              <button className="btn btn-primary" onClick={exportToPDF} style={{ marginRight: '12px' }}>
+                Export PDF
+              </button>
+              <button className="btn btn-secondary" onClick={fetchAccountData}>
+                Refresh Data
+              </button>
             </div>
           </div>
-          
-          {/* Logo Upload Guidelines */}
-          <div className="bg-blue-50/80 border border-blue-200 rounded-2xl p-6 text-sm no-print mb-6">
-            <h4 className="font-semibold text-blue-800 mb-3 flex items-center gap-2">
-              📋 Logo Upload Guidelines
-            </h4>
-            <div className="grid md:grid-cols-2 gap-4 text-blue-700">
-              <ul className="space-y-2">
-                <li className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
-                  Maximum file size: 2MB
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
-                  Recommended: 512x512 pixels
-                </li>
-              </ul>
-              <ul className="space-y-2">
-                <li className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
-                  Formats: PNG, JPG, SVG
-                </li>
-                <li className="flex items-center gap-2">
-                  <span className="w-1.5 h-1.5 bg-blue-500 rounded-full"></span>
-                  Auto-resized for display
-                </li>
-              </ul>
-            </div>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div>
-              <label className="block text-gray-700 font-medium mb-2">📅 Date Range</label>
-              <input 
-                type="text" 
-                value={dateRange}
-                onChange={(e) => setDateRange(e.target.value)}
-                className="w-full p-3 border border-gray-200 rounded-xl bg-white/80 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all duration-200"
-                id="report_date_range" // API integration marker
-              />
-            </div>
-            <div>
-              <label className="block text-gray-700 font-medium mb-2">👤 Client Name</label>
-              <input 
-                type="text" 
-                value={clientName}
-                onChange={(e) => setClientName(e.target.value)}
-                className="w-full p-3 border border-gray-200 rounded-xl bg-white/80 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all duration-200"
-                id="client_name" // API integration marker
-              />
-            </div>
-            <div>
-              <label className="block text-gray-700 font-medium mb-2">🔢 Account ID</label>
-              <input 
-                type="text" 
-                value={accountId}
-                onChange={(e) => setAccountId(e.target.value)}
-                className="w-full p-3 border border-gray-200 rounded-xl bg-white/80 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition-all duration-200"
-                id="account_id" // API integration marker
-              />
-            </div>
-          </div>
-        </div>
+        </header>
 
-        {/* Dashboard KPI Overview */}
-        <section className="page-break-avoid">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-1 h-8 bg-gradient-to-b from-blue-500 to-purple-500 rounded-full"></div>
-            <h2 className="text-2xl font-bold text-gray-800">📊 Performance Overview</h2>
-          </div>
+        {/* KPI Dashboard */}
+        <section>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '24px', color: 'var(--report-header)' }}>
+            Key Performance Indicators
+          </h2>
           <div className="kpi-dashboard-grid">
-            <div className="dashboard-kpi glow-effect">
-              <div className="kpi-icon">👆</div>
-              <div className="kpi-value" id="metric_clicks">
-                {formatNumber(reportData.clicks)}
-              </div>
+            <div className="dashboard-kpi">
+              <div className="kpi-icon">📊</div>
+              <div className="kpi-value" id="kpi_total_clicks">{formatNumber(reportData.clicks)}</div>
               <div className="kpi-label">Total Clicks</div>
-              <div className="kpi-change positive">+12.5%</div>
+              <div className="kpi-change positive">↗ +12.4%</div>
             </div>
-            <div className="dashboard-kpi glow-effect">
+            
+            <div className="dashboard-kpi">
               <div className="kpi-icon">👁️</div>
-              <div className="kpi-value" id="metric_impressions">
-                {formatNumber(reportData.impressions)}
-              </div>
+              <div className="kpi-value" id="kpi_total_impressions">{formatNumber(reportData.impressions)}</div>
               <div className="kpi-label">Impressions</div>
-              <div className="kpi-change positive">+8.3%</div>
+              <div className="kpi-change positive">↗ +8.7%</div>
             </div>
-            <div className="dashboard-kpi glow-effect">
-              <div className="kpi-icon">🎯</div>
-              <div className="kpi-value" id="metric_ctr">
-                {formatPercentage(reportData.ctr)}
-              </div>
-              <div className="kpi-label">CTR</div>
-              <div className="kpi-change positive">+15.2%</div>
-            </div>
-            <div className="dashboard-kpi glow-effect">
+            
+            <div className="dashboard-kpi">
               <div className="kpi-icon">💰</div>
-              <div className="kpi-value" id="metric_avg_cpc">
-                {formatCurrency(reportData.avgCpc)}
-              </div>
-              <div className="kpi-label">Avg CPC</div>
-              <div className="kpi-change negative">-5.7%</div>
-            </div>
-            <div className="dashboard-kpi glow-effect">
-              <div className="kpi-icon">🔄</div>
-              <div className="kpi-value" id="metric_conversions">
-                {formatNumber(reportData.conversions)}
-              </div>
-              <div className="kpi-label">Conversions</div>
-              <div className="kpi-change positive">+22.1%</div>
-            </div>
-            <div className="dashboard-kpi glow-effect">
-              <div className="kpi-icon">📈</div>
-              <div className="kpi-value" id="metric_conversion_rate">
-                {formatPercentage(reportData.conversionRate)}
-              </div>
-              <div className="kpi-label">Conversion Rate</div>
-              <div className="kpi-change positive">+18.4%</div>
-            </div>
-            <div className="dashboard-kpi glow-effect">
-              <div className="kpi-icon">💸</div>
-              <div className="kpi-value" id="metric_cost">
-                {formatCurrency(reportData.cost)}
-              </div>
+              <div className="kpi-value" id="kpi_total_cost">{formatCurrency(reportData.cost)}</div>
               <div className="kpi-label">Total Cost</div>
-              <div className="kpi-change positive">+6.2%</div>
+              <div className="kpi-change negative">↘ -3.2%</div>
             </div>
-            <div className="dashboard-kpi glow-effect">
-              <div className="kpi-icon">⚡</div>
-              <div className="kpi-value" id="metric_roas">
-                {reportData.roas.toFixed(1)}x
-              </div>
+            
+            <div className="dashboard-kpi">
+              <div className="kpi-icon">🎯</div>
+              <div className="kpi-value" id="kpi_roas">{reportData.roas}x</div>
               <div className="kpi-label">ROAS</div>
-              <div className="kpi-change positive">+25.8%</div>
+              <div className="kpi-change positive">↗ +18.9%</div>
             </div>
           </div>
         </section>
 
-        {/* Enhanced Charts Section */}
-        <section className="page-break-avoid">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-1 h-8 bg-gradient-to-b from-purple-500 to-teal-500 rounded-full"></div>
-            <h2 className="text-2xl font-bold text-gray-800">📈 Performance Analytics</h2>
-          </div>
+        {/* Charts Dashboard */}
+        <section>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '24px', color: 'var(--report-header)' }}>
+            Performance Analytics
+          </h2>
           <div className="chart-dashboard-grid">
-            <div className="dashboard-chart-card glow-effect">
+            <div className="dashboard-chart-card">
               <div className="chart-card-header">
                 <h3 className="chart-card-title">
-                  📊 Daily Spend vs Conversions
+                  📈 Performance Trends
                 </h3>
-                <p className="chart-card-subtitle">Track spending efficiency and conversion trends over time</p>
+                <p className="chart-card-subtitle">30-day trend analysis</p>
               </div>
               <div className="chart-card-content">
-                <div className="whatagraph-chart-placeholder" id="chart_daily_trends">
+                <div className="whatagraph-chart-placeholder" id="chart_performance_trends">
                   <div className="chart-icon-large">📈</div>
                   <div className="chart-description">
-                    <div className="chart-main-text">Line Chart: Daily Performance Trends</div>
-                    <div className="chart-sub-text">Data will be injected via API integration</div>
-                    <div className="chart-sub-text">Shows spend efficiency and conversion patterns</div>
+                    <div className="chart-main-text">Performance Trends Chart</div>
+                    <div className="chart-sub-text">30-day clicks, impressions, and cost trends</div>
                   </div>
                 </div>
               </div>
             </div>
-            <div className="dashboard-chart-card glow-effect">
+
+            <div className="dashboard-chart-card">
               <div className="chart-card-header">
                 <h3 className="chart-card-title">
-                  🎯 Campaign Metrics Comparison
+                  🔄 Conversion Funnel
                 </h3>
-                <p className="chart-card-subtitle">Compare CTR, CPC, and conversion performance across campaigns</p>
+                <p className="chart-card-subtitle">User journey analysis</p>
               </div>
               <div className="chart-card-content">
-                <div className="whatagraph-chart-placeholder" id="chart_campaign_metrics">
+                <div className="funnel-chart-placeholder" id="chart_conversion_funnel">
+                  <div className="funnel-stage">Impressions: {formatNumber(reportData.impressions)}</div>
+                  <div className="funnel-stage">Clicks: {formatNumber(reportData.clicks)}</div>
+                  <div className="funnel-stage">Conversions: {formatNumber(reportData.conversions)}</div>
+                </div>
+              </div>
+            </div>
+
+            <div className="dashboard-chart-card">
+              <div className="chart-card-header">
+                <h3 className="chart-card-title">
+                  🥧 Campaign Spend Distribution
+                </h3>
+                <p className="chart-card-subtitle">Budget allocation breakdown</p>
+              </div>
+              <div className="chart-card-content">
+                <div className="pie-chart-placeholder" id="chart_spend_distribution">
+                  <div className="pie-visual">
+                    <div style={{ color: 'white', fontWeight: '600', textAlign: 'center' }}>
+                      <div>Campaign</div>
+                      <div>Spend Mix</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="dashboard-chart-card">
+              <div className="chart-card-header">
+                <h3 className="chart-card-title">
+                  🎯 Campaign Performance
+                </h3>
+                <p className="chart-card-subtitle">ROAS by campaign comparison</p>
+              </div>
+              <div className="chart-card-content">
+                <div className="whatagraph-chart-placeholder" id="chart_campaign_comparison">
                   <div className="chart-icon-large">📊</div>
                   <div className="chart-description">
-                    <div className="chart-main-text">Bar Chart: Campaign Performance</div>
-                    <div className="chart-sub-text">Multi-metric comparison visualization</div>
-                    <div className="chart-sub-text">CTR, CPC, Conversions analysis</div>
+                    <div className="chart-main-text">Campaign ROAS Comparison</div>
+                    <div className="chart-sub-text">Performance by campaign type</div>
                   </div>
                 </div>
               </div>
@@ -479,31 +270,32 @@ const GoogleAdsReport: React.FC = () => {
         </section>
 
         {/* Campaign Performance Table */}
-        <section className="report-card p-6 page-break-avoid">
-          <h2 className="text-xl font-semibold text-report-header mb-6">Top Campaigns Performance</h2>
-          <div className="overflow-x-auto">
-            <table className="data-table" id="campaign_performance_table">
+        <section>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '24px', color: 'var(--report-header)' }}>
+            Top Performing Campaigns
+          </h2>
+          <div style={{ overflowX: 'auto' }}>
+            <table className="dashboard-table" id="campaign_performance_table">
               <thead>
                 <tr>
                   <th>Campaign Name</th>
-                  <th className="text-right">Spend</th>
-                  <th className="text-right">Impressions</th>
-                  <th className="text-right">CTR</th>
-                  <th className="text-right">Conversions</th>
-                  <th className="text-right">ROAS</th>
+                  <th>Spend</th>
+                  <th>Impressions</th>
+                  <th>CTR</th>
+                  <th>Conversions</th>
+                  <th>ROAS</th>
                 </tr>
               </thead>
-              <tbody id="campaign_data_rows">
-                {/* API Integration Point: Replace with dynamic data */}
+              <tbody>
                 {campaignData.map((campaign, index) => (
                   <tr key={index}>
-                    <td className="font-medium">{campaign.name}</td>
-                    <td className="text-right">{formatCurrency(campaign.spend)}</td>
-                    <td className="text-right">{formatNumber(campaign.impressions)}</td>
-                    <td className="text-right">{formatPercentage(campaign.ctr)}</td>
-                    <td className="text-right">{formatNumber(campaign.conversions)}</td>
-                    <td className="text-right font-semibold text-success">
-                      {campaign.roas.toFixed(1)}x
+                    <td>{campaign.name}</td>
+                    <td>{formatCurrency(campaign.spend)}</td>
+                    <td>{formatNumber(campaign.impressions)}</td>
+                    <td>{formatPercentage(campaign.ctr)}</td>
+                    <td>{formatNumber(campaign.conversions)}</td>
+                    <td style={{ fontWeight: '600', color: campaign.roas >= 4 ? 'var(--dashboard-success)' : 'var(--dashboard-warning)' }}>
+                      {campaign.roas}x
                     </td>
                   </tr>
                 ))}
@@ -512,206 +304,73 @@ const GoogleAdsReport: React.FC = () => {
           </div>
         </section>
 
-        {/* Analyst Notes - Editable Section */}
-        <section className="report-card p-6 page-break-avoid">
-          <h2 className="text-xl font-semibold text-report-header mb-6">Analyst Notes</h2>
-          <div 
-            className="editable-content"
-            contentEditable
-            suppressContentEditableWarning={true}
-            onBlur={(e) => setAnalystNotes(e.currentTarget.textContent || '')}
-            id="analyst_notes" // API integration marker
-          >
-            {analystNotes}
-          </div>
-          <p className="text-xs text-muted-foreground mt-2">
-            Click to edit analyst commentary and strategic observations
-          </p>
-        </section>
+        {/* Analysis and Recommendations */}
+        <section>
+          <h2 style={{ fontSize: '1.5rem', fontWeight: '700', marginBottom: '24px', color: 'var(--report-header)' }}>
+            Analysis & Recommendations
+          </h2>
+          <div className="summary-dashboard-grid">
+            <div className="dashboard-summary-card">
+              <h3 className="summary-card-title">
+                📝 Analyst Notes
+              </h3>
+              <div 
+                className="dashboard-editable-content"
+                contentEditable
+                suppressContentEditableWarning
+                onBlur={(e) => setAnalystNotes(e.target.textContent || '')}
+              >
+                {analystNotes}
+              </div>
+            </div>
 
-        {/* Summary and Recommendations */}
-        <section className="report-card p-6 page-break page-break-avoid">
-          <h2 className="text-xl font-semibold text-report-header mb-6">Summary & Recommendations</h2>
-          
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-            <div className="metric-card border-l-4 border-l-success">
-              <h3 className="font-semibold text-success mb-2">Key Wins</h3>
-              <div 
-                className="editable-list text-sm"
-                contentEditable
-                suppressContentEditableWarning={true}
-                onBlur={(e) => {
-                  const content = e.currentTarget.textContent || '';
-                  setKeyWins(content.split('\n').filter(line => line.trim()));
-                }}
-                id="key_wins"
-              >
-                {keyWins.map(win => `• ${win}`).join('\n')}
+            <div className="dashboard-summary-card">
+              <h3 className="summary-card-title">
+                💡 Key Recommendations
+              </h3>
+              <div className="summary-card-list">
+                {recommendations.map((rec, index) => (
+                  <div key={index} className="summary-card-item">
+                    <div className="summary-bullet"></div>
+                    <div>{rec}</div>
+                  </div>
+                ))}
               </div>
-              <p className="text-xs text-muted-foreground mt-1">Click to edit</p>
             </div>
-            
-            <div className="metric-card border-l-4 border-l-info">
-              <h3 className="font-semibold text-info mb-2">Key Learnings</h3>
-              <div 
-                className="editable-list text-sm"
-                contentEditable
-                suppressContentEditableWarning={true}
-                onBlur={(e) => {
-                  const content = e.currentTarget.textContent || '';
-                  setKeyLearnings(content.split('\n').filter(line => line.trim()));
-                }}
-                id="key_learnings"
-              >
-                {keyLearnings.map(learning => `• ${learning}`).join('\n')}
+
+            <div className="action-dashboard-card">
+              <h3 className="summary-card-title">
+                🚀 Next Actions
+              </h3>
+              <div style={{ marginTop: '16px' }}>
+                <button className="btn btn-primary" style={{ width: '100%', marginBottom: '8px' }}>
+                  Schedule Campaign Review
+                </button>
+                <button className="btn btn-outline" style={{ width: '100%' }}>
+                  Export Detailed Report
+                </button>
               </div>
-              <p className="text-xs text-muted-foreground mt-1">Click to edit</p>
             </div>
-            
-            <div className="metric-card border-l-4 border-l-warning">
-              <h3 className="font-semibold text-warning mb-2">Improvement Areas</h3>
-              <div 
-                className="editable-list text-sm"
-                contentEditable
-                suppressContentEditableWarning={true}
-                onBlur={(e) => {
-                  const content = e.currentTarget.textContent || '';
-                  setImprovementAreas(content.split('\n').filter(line => line.trim()));
-                }}
-                id="improvement_areas"
-              >
-                {improvementAreas.map(area => `• ${area}`).join('\n')}
-              </div>
-              <p className="text-xs text-muted-foreground mt-1">Click to edit</p>
-            </div>
-          </div>
-          
-          <div className="bg-accent/10 border border-accent/20 rounded-lg p-4">
-            <h3 className="font-semibold text-accent mb-2">🎯 Next Steps & Strategic Actions</h3>
-            <div 
-              className="editable-content text-sm"
-              contentEditable
-              suppressContentEditableWarning={true}
-              onBlur={(e) => setNextSteps(e.currentTarget.textContent || '')}
-              id="next_steps"
-            >
-              {nextSteps}
-            </div>
-            <p className="text-xs text-muted-foreground mt-1">Click to edit strategic actions</p>
           </div>
         </section>
 
-        {/* Export Controls */}
-        <section className="flex justify-center space-x-4 no-print">
-          <Button onClick={() => window.print()} className="px-6">
-            Export to PDF
-          </Button>
-          <Button variant="outline" className="px-6">
-            Export to Google Docs
-          </Button>
-        </section>
-      </div>
-
-      {/* Footer */}
-      <footer className="bg-card border-t border-border mt-12 p-6">
-        <div className="max-w-6xl mx-auto flex justify-between items-center text-sm text-muted-foreground">
-          <div className="flex items-center space-x-4">
-            <span className="font-semibold">Powered by AdSpyder</span>
-            <span>•</span>
-            <a href="#" className="hover:text-primary">contact@adspyder.com</a>
-            <span>•</span>
-            <a href="#" className="hover:text-primary">www.adspyder.com</a>
+        {/* Footer */}
+        <footer style={{ 
+          textAlign: 'center', 
+          marginTop: '48px', 
+          padding: '24px', 
+          borderTop: '1px solid var(--border)',
+          color: 'var(--muted-foreground)',
+          fontSize: '0.875rem'
+        }}>
+          <div style={{ marginBottom: '8px' }}>
+            <strong>Powered by AdSpyder</strong> | Professional Google Ads Analytics
           </div>
           <div>
-            Page 1 of 1 • Generated {new Date().toLocaleDateString()}
+            Report generated on {generatedDate} | ID: {reportId}
           </div>
-        </div>
-      </footer>
-
-      {/* Load data on component mount */}
-      <script type="text/javascript" dangerouslySetInnerHTML={{
-        __html: `
-        // API Integration - Ready for implementation
-        window.reportAPI = {
-          // Load performance metrics from Google Ads API
-          async loadPerformanceData() {
-            try {
-              const response = await fetch('/api/google-ads/performance', {
-                method: 'GET',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': 'Bearer ' + (process.env.GOOGLE_ADS_API_TOKEN || 'YOUR_API_TOKEN')
-                }
-              });
-              
-              if (!response.ok) throw new Error('Failed to fetch performance data');
-              return await response.json();
-              
-            } catch (error) {
-              console.error('API Error - Performance data:', error);
-              return null;
-            }
-          },
-
-          // Load campaign data from Google Ads API  
-          async loadCampaignData() {
-            try {
-              const response = await fetch('/api/google-ads/campaigns', {
-                headers: {
-                  'Authorization': 'Bearer ' + (process.env.GOOGLE_ADS_API_TOKEN || 'YOUR_API_TOKEN')
-                }
-              });
-              
-              if (!response.ok) throw new Error('Failed to fetch campaign data');
-              return await response.json();
-              
-            } catch (error) {
-              console.error('API Error - Campaign data:', error);
-              return null;
-            }
-          },
-
-          // Load chart/trend data
-          async loadChartData() {
-            try {
-              const response = await fetch('/api/google-ads/charts', {
-                headers: {
-                  'Authorization': 'Bearer ' + (process.env.GOOGLE_ADS_API_TOKEN || 'YOUR_API_TOKEN')
-                }
-              });
-              
-              if (!response.ok) throw new Error('Failed to fetch chart data');
-              return await response.json();
-              
-            } catch (error) {
-              console.error('API Error - Chart data:', error);
-              return null;
-            }
-          },
-
-          // Save report data (for editable content)
-          async saveReportData(reportData) {
-            try {
-              const response = await fetch('/api/reports/save', {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                  'Authorization': 'Bearer ' + (process.env.API_TOKEN || 'YOUR_API_TOKEN')
-                },
-                body: JSON.stringify(reportData)
-              });
-              
-              if (!response.ok) throw new Error('Failed to save report');
-              return await response.json();
-              
-            } catch (error) {
-              console.error('API Error - Save report:', error);
-              return null;
-            }
-          }
-        };
-        `
-      }} />
+        </footer>
+      </div>
     </div>
   );
 };

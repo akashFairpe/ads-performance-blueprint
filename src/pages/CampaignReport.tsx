@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import LogoUploader from '../components/LogoUploader';
+import BrandingSystem, { BrandingConfig } from '../components/BrandingSystem';
 
 // Type definitions for Campaign Performance Report
 interface CampaignMetrics {
@@ -79,10 +79,10 @@ const CampaignReport: React.FC = () => {
     { id: "CR003", title: "Feature Highlight Ad", type: "Search", impressions: 52341, clicks: 1823, ctr: 3.48, conversions: 394, spend: 1823.12 }
   ]);
 
-  const [reportTitle] = useState('Campaign Performance Report');
-  const [campaignName] = useState('Summer 2024 Product Launch');
-  const [dateRange] = useState('July 1, 2024 - July 31, 2024');
-  const [clientName] = useState('[Client Name]');
+  const [reportTitle, setReportTitle] = useState('Campaign Performance Report');
+  const [campaignName, setCampaignName] = useState('Summer 2024 Product Launch');
+  const [dateRange, setDateRange] = useState('July 1, 2024 - July 31, 2024');
+  const [clientName, setClientName] = useState('[Client Name]');
   const [reportId] = useState('CPR-' + Math.random().toString(36).substr(2, 9).toUpperCase());
   const [generatedDate] = useState(new Date().toLocaleDateString());
 
@@ -90,11 +90,13 @@ const CampaignReport: React.FC = () => {
     "This campaign has exceeded performance expectations with a 21.6% conversion rate, significantly above the industry benchmark of 15%. The Summer Sale Banner creative demonstrates the strongest performance with highest CTR and conversion volume. Recommend scaling budget allocation to top-performing creatives and expanding audience targeting to similar demographic segments."
   );
 
-  const [companyLogo, setCompanyLogo] = useState<string>('');
-  const [brandColors, setBrandColors] = useState({
-    primary: '#3B82F6',
-    secondary: '#8B5CF6',
-    accent: '#10B981'
+  // Branding configuration
+  const [branding, setBranding] = useState<BrandingConfig>({
+    logo: '',
+    primaryColor: '#3B82F6',
+    fontFamily: 'Inter',
+    companyName: 'Your Company',
+    footerText: 'Powered by AdSpyder'
   });
 
   // Utility functions
@@ -115,46 +117,51 @@ const CampaignReport: React.FC = () => {
   };
 
   return (
-    <div className="dashboard-container">
+    <div className="dashboard-container" style={{ fontFamily: `var(--font-family-brand, ${branding.fontFamily})` }}>
       <div className="dashboard-wrapper">
+        
+        {/* Branding System */}
+        <BrandingSystem 
+          onBrandingChange={setBranding}
+          initialBranding={branding}
+        />
         
         {/* Report Header - Page Break Before */}
         <header className="dashboard-header page-break-before">
           <div className="dashboard-header-content">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--section-spacing)' }}>
               <div>
-                {/* Company Logo with Upload Functionality */}
-                <div style={{ marginBottom: 'var(--element-spacing)' }}>
-                  <LogoUploader 
-                    onLogoUpload={setCompanyLogo} 
-                    currentLogo={companyLogo}
+                {/* Company Logo Display */}
+                {branding.logo && (
+                  <img 
+                    src={branding.logo} 
+                    alt="Company Logo"
+                    style={{ 
+                      height: '40px', 
+                      maxWidth: '150px', 
+                      objectFit: 'contain',
+                      marginBottom: 'var(--element-spacing)' 
+                    }}
+                    id="company_logo"
                   />
-                </div>
-                
-                {/* Brand Color Customization */}
-                <div className="brand-customization" style={{ display: 'none' }}>
-                  <h4 style={{ fontSize: 'var(--font-small)', fontWeight: '600', marginBottom: '8px' }}>Brand Colors</h4>
-                  <div style={{ display: 'flex', gap: '8px' }}>
-                    <input 
-                      type="color" 
-                      value={brandColors.primary} 
-                      onChange={(e) => setBrandColors({...brandColors, primary: e.target.value})}
-                      title="Primary Color"
-                    />
-                    <input 
-                      type="color" 
-                      value={brandColors.secondary} 
-                      onChange={(e) => setBrandColors({...brandColors, secondary: e.target.value})}
-                      title="Secondary Color"
-                    />
-                    <input 
-                      type="color" 
-                      value={brandColors.accent} 
-                      onChange={(e) => setBrandColors({...brandColors, accent: e.target.value})}
-                      title="Accent Color"
-                    />
+                )}
+                {!branding.logo && (
+                  <div style={{ 
+                    width: '120px', 
+                    height: '40px', 
+                    background: 'var(--background-secondary)', 
+                    border: '2px dashed var(--border)', 
+                    borderRadius: 'var(--border-radius-card)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: 'var(--font-small)',
+                    color: 'var(--text-secondary)',
+                    marginBottom: 'var(--element-spacing)'
+                  }}>
+                    {branding.companyName}
                   </div>
-                </div>
+                )}
               </div>
               
               <div className="no-print">
@@ -176,12 +183,44 @@ const CampaignReport: React.FC = () => {
               </div>
             </div>
 
-            <h1 className="dashboard-title" id="report_title">{reportTitle}</h1>
-            <h2 className="dashboard-subtitle" id="campaign_name">{campaignName}</h2>
+            <h1 
+              className="dashboard-title" 
+              contentEditable
+              suppressContentEditableWarning
+              onBlur={(e) => setReportTitle(e.target.textContent || '')}
+              id="report_title"
+            >
+              {reportTitle}
+            </h1>
+            <h2 
+              className="dashboard-subtitle" 
+              contentEditable
+              suppressContentEditableWarning
+              onBlur={(e) => setCampaignName(e.target.textContent || '')}
+              id="campaign_name"
+            >
+              {campaignName}
+            </h2>
             
             <div className="dashboard-date">
-              <strong>Reporting Period:</strong> <span id="date_range">{dateRange}</span> | 
-              <strong>Client:</strong> <span id="client_name">{clientName}</span> | 
+              <strong>Reporting Period:</strong> 
+              <span 
+                contentEditable
+                suppressContentEditableWarning
+                onBlur={(e) => setDateRange(e.target.textContent || '')}
+                id="date_range"
+              >
+                {dateRange}
+              </span> | 
+              <strong>Client:</strong> 
+              <span 
+                contentEditable
+                suppressContentEditableWarning
+                onBlur={(e) => setClientName(e.target.textContent || '')}
+                id="client_name"
+              >
+                {clientName}
+              </span> | 
               <strong>Report ID:</strong> <span id="report_id">{reportId}</span> | 
               <strong>Generated:</strong> <span id="generated_date">{generatedDate}</span>
             </div>
@@ -596,7 +635,7 @@ const CampaignReport: React.FC = () => {
           </div>
         </section>
 
-        {/* Footer */}
+        {/* Customizable Footer - Page Break Before */}
         <footer className="page-break-before" style={{ 
           textAlign: 'center', 
           marginTop: '48px', 
@@ -606,10 +645,22 @@ const CampaignReport: React.FC = () => {
           fontSize: 'var(--font-small)'
         }}>
           <div style={{ marginBottom: '8px' }}>
-            <strong>Powered by Campaign Analytics Suite</strong> | Professional Performance Reporting
+            <span 
+              contentEditable
+              suppressContentEditableWarning
+              onBlur={(e) => setBranding({...branding, footerText: e.target.textContent || ''})}
+              id="footer_text"
+              style={{ fontWeight: '600' }}
+            >
+              {branding.footerText}
+            </span> | Professional Campaign Performance Reporting
           </div>
           <div>
-            Report generated on <span id="footer_generated_date">{generatedDate}</span> | Report ID: <span id="footer_report_id">{reportId}</span>
+            Report generated on <span id="footer_generated_date">{generatedDate}</span> | 
+            Report ID: <span id="footer_report_id">{reportId}</span>
+          </div>
+          <div style={{ fontSize: '0.75rem', marginTop: '8px', opacity: 0.7 }}>
+            Page <span className="page-number"></span>
           </div>
           <div style={{ marginTop: '12px', display: 'flex', justifyContent: 'center', gap: 'var(--element-spacing)' }}>
             {/* Social/Contact placeholders */}
@@ -618,6 +669,24 @@ const CampaignReport: React.FC = () => {
             <div style={{ width: '24px', height: '24px', background: 'var(--background-secondary)', borderRadius: '50%' }}></div>
           </div>
         </footer>
+
+        {/* CSS for print page numbering and export */}
+        <style>{`
+          @media print {
+            .page-break-before { page-break-before: always; }
+            .page-break-avoid { page-break-inside: avoid; }
+            .no-print { display: none !important; }
+            
+            @page {
+              counter-increment: page;
+              margin: 1in;
+            }
+            
+            .page-number:after {
+              content: counter(page);
+            }
+          }
+        `}</style>
       </div>
     </div>
   );

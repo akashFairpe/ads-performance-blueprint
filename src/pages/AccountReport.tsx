@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import BrandingSystem, { BrandingConfig } from '../components/BrandingSystem';
 
 // Type definitions for API integration
 interface MetricData {
@@ -61,6 +62,15 @@ const AccountReport: React.FC = () => {
   const [reportId, setReportId] = useState('RPT-' + Math.random().toString(36).substr(2, 9).toUpperCase());
   const [generatedDate, setGeneratedDate] = useState(new Date().toLocaleDateString());
 
+  // Branding configuration
+  const [branding, setBranding] = useState<BrandingConfig>({
+    logo: '',
+    primaryColor: '#3B82F6',
+    fontFamily: 'Inter',
+    companyName: 'Your Company',
+    footerText: 'Powered by AdSpyder'
+  });
+
   // API Integration Helper Functions (for future implementation)
   const fetchAccountData = async () => {
     // Example API call structure
@@ -102,16 +112,77 @@ const AccountReport: React.FC = () => {
   };
 
   return (
-    <div className="dashboard-container">
+    <div className="dashboard-container" style={{ fontFamily: `var(--font-family-brand, ${branding.fontFamily})` }}>
       <div className="dashboard-wrapper">
-        {/* Report Header */}
-        <header className="dashboard-header">
+        
+        {/* Branding System */}
+        <BrandingSystem 
+          onBrandingChange={setBranding}
+          initialBranding={branding}
+        />
+
+        {/* Report Header - Page Break Before */}
+        <header className="dashboard-header page-break-before">
           <div className="dashboard-header-content">
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--section-spacing)' }}>
+              <div>
+                {/* Company Logo Display */}
+                {branding.logo && (
+                  <img 
+                    src={branding.logo} 
+                    alt="Company Logo"
+                    style={{ 
+                      height: '40px', 
+                      maxWidth: '150px', 
+                      objectFit: 'contain',
+                      marginBottom: 'var(--element-spacing)' 
+                    }}
+                    id="company_logo"
+                  />
+                )}
+                {!branding.logo && (
+                  <div style={{ 
+                    width: '120px', 
+                    height: '40px', 
+                    background: 'var(--background-secondary)', 
+                    border: '2px dashed var(--border)', 
+                    borderRadius: 'var(--border-radius-card)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: 'var(--font-small)',
+                    color: 'var(--text-secondary)',
+                    marginBottom: 'var(--element-spacing)'
+                  }}>
+                    {branding.companyName}
+                  </div>
+                )}
+              </div>
+              
+              <div className="no-print" style={{ display: 'flex', gap: '12px' }}>
+                <button 
+                  className="btn btn-primary" 
+                  onClick={exportToPDF} 
+                  type="button"
+                >
+                  Export PDF
+                </button>
+                <button 
+                  className="btn btn-secondary" 
+                  onClick={fetchAccountData}
+                  type="button"
+                >
+                  Refresh Data
+                </button>
+              </div>
+            </div>
+
             <h1 
               className="dashboard-title"
               contentEditable
               suppressContentEditableWarning
               onBlur={(e) => setReportTitle(e.target.textContent || '')}
+              id="report_title"
             >
               {reportTitle}
             </h1>
@@ -120,6 +191,7 @@ const AccountReport: React.FC = () => {
               contentEditable
               suppressContentEditableWarning
               onBlur={(e) => setDateRange(e.target.textContent || '')}
+              id="date_range"
             >
               Performance Period: {dateRange}
             </div>
@@ -129,6 +201,7 @@ const AccountReport: React.FC = () => {
                 contentEditable
                 suppressContentEditableWarning
                 onBlur={(e) => setClientName(e.target.textContent || '')}
+                id="client_name"
               >
                 {clientName}
               </span> | 
@@ -137,28 +210,12 @@ const AccountReport: React.FC = () => {
                 contentEditable
                 suppressContentEditableWarning
                 onBlur={(e) => setAccountId(e.target.textContent || '')}
+                id="account_id"
               >
                 {accountId}
               </span> | 
-              <strong>Report ID:</strong> {reportId} | 
-              <strong>Generated:</strong> {generatedDate}
-            </div>
-            <div style={{ marginTop: '16px' }}>
-              <button 
-                className="btn btn-primary" 
-                onClick={exportToPDF} 
-                style={{ marginRight: '12px' }}
-                type="button"
-              >
-                Export PDF
-              </button>
-              <button 
-                className="btn btn-secondary" 
-                onClick={fetchAccountData}
-                type="button"
-              >
-                Refresh Data
-              </button>
+              <strong>Report ID:</strong> <span id="report_id">{reportId}</span> | 
+              <strong>Generated:</strong> <span id="generated_date">{generatedDate}</span>
             </div>
           </div>
         </header>
@@ -363,8 +420,8 @@ const AccountReport: React.FC = () => {
           </div>
         </section>
 
-        {/* Footer */}
-        <footer style={{ 
+        {/* Customizable Footer - Page Break Before */}
+        <footer className="page-break-before" style={{ 
           textAlign: 'center', 
           marginTop: '48px', 
           padding: '24px', 
@@ -373,12 +430,84 @@ const AccountReport: React.FC = () => {
           fontSize: '0.875rem'
         }}>
           <div style={{ marginBottom: '8px' }}>
-            <strong>Powered by AdSpyder</strong> | Professional Google Ads Analytics
+            <span 
+              contentEditable
+              suppressContentEditableWarning
+              onBlur={(e) => setBranding({...branding, footerText: e.target.textContent || ''})}
+              id="footer_text"
+              style={{ fontWeight: '600' }}
+            >
+              {branding.footerText}
+            </span> | Professional Google Ads Analytics
           </div>
           <div>
-            Report generated on {generatedDate} | ID: {reportId}
+            Report generated on <span id="footer_generated_date">{generatedDate}</span> | 
+            ID: <span id="footer_report_id">{reportId}</span>
+          </div>
+          <div style={{ fontSize: '0.75rem', marginTop: '8px', opacity: 0.7 }}>
+            Page <span className="page-number"></span>
           </div>
         </footer>
+
+        {/* CSS for print page numbering */}
+        <style>{`
+          @media print {
+            .page-break-before { page-break-before: always; }
+            .page-break-avoid { page-break-inside: avoid; }
+            .no-print { display: none !important; }
+            
+            @page {
+              counter-increment: page;
+              margin: 1in;
+            }
+            
+            .page-number:after {
+              content: counter(page);
+            }
+          }
+          
+          /* API Integration Script Template */
+          /*
+          // Example API integration for dynamic data population
+          async function fetchAccountData() {
+            try {
+              const response = await fetch('/api/google-ads/account-summary', {
+                method: 'GET',
+                headers: {
+                  'Authorization': 'Bearer ' + accessToken,
+                  'Content-Type': 'application/json'
+                }
+              });
+              const data = await response.json();
+              
+              // Update KPI values
+              document.getElementById('kpi_total_clicks').textContent = formatNumber(data.clicks);
+              document.getElementById('kpi_total_impressions').textContent = formatNumber(data.impressions);
+              document.getElementById('kpi_total_cost').textContent = formatCurrency(data.cost);
+              document.getElementById('kpi_roas').textContent = data.roas + 'x';
+              
+              // Update campaign table
+              const tableBody = document.querySelector('#campaign_performance_table tbody');
+              tableBody.innerHTML = '';
+              data.campaigns.forEach(campaign => {
+                const row = document.createElement('tr');
+                row.innerHTML = \`
+                  <td>\${campaign.name}</td>
+                  <td>\${formatCurrency(campaign.spend)}</td>
+                  <td>\${formatNumber(campaign.impressions)}</td>
+                  <td>\${formatPercentage(campaign.ctr)}</td>
+                  <td>\${formatNumber(campaign.conversions)}</td>
+                  <td style="font-weight: 600; color: \${campaign.roas >= 4 ? 'var(--dashboard-success)' : 'var(--dashboard-warning)'}">\${campaign.roas}x</td>
+                \`;
+                tableBody.appendChild(row);
+              });
+              
+            } catch (error) {
+              console.error('Failed to fetch account data:', error);
+            }
+          }
+          */
+        `}</style>
       </div>
     </div>
   );

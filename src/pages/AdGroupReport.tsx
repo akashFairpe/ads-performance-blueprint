@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import BrandingSystem, { BrandingConfig } from '../components/BrandingSystem';
 
 // Type definitions for Ad Group Performance Report
 interface AdGroupMetrics {
@@ -84,16 +85,25 @@ const AdGroupReport: React.FC = () => {
     { id: "AD003", adGroupId: "AG003", headline: "Summer Athletic Collection 2024", description: "Stay cool and comfortable with our latest summer gear", cta: "Explore Now", impressions: 17447, clicks: 607, ctr: 3.48 }
   ]);
 
-  const [reportTitle] = useState('Google Ads Ad Group Performance Report');
-  const [accountName] = useState('[Account Name]');
-  const [campaignName] = useState('Summer 2024 Product Campaign');
-  const [dateRange] = useState('July 1, 2024 - July 31, 2024');
+  const [reportTitle, setReportTitle] = useState('Google Ads Ad Group Performance Report');
+  const [accountName, setAccountName] = useState('[Account Name]');
+  const [campaignName, setCampaignName] = useState('Summer 2024 Product Campaign');
+  const [dateRange, setDateRange] = useState('July 1, 2024 - July 31, 2024');
   const [reportId] = useState('AGR-' + Math.random().toString(36).substr(2, 9).toUpperCase());
   const [generatedDate] = useState(new Date().toLocaleDateString());
 
   const [analystNotes, setAnalystNotes] = useState(
     "Ad group performance shows strong results with Premium Product Targeting leading in ROAS at 5.2x. Brand Keywords demonstrate excellent efficiency with lowest CPC at $1.25. Recommend pausing Competitor Terms ad group and reallocating budget to top-performing Premium and Brand ad groups. Consider expanding exact match keywords in high-performing ad groups to capture additional qualified traffic."
   );
+
+  // Branding configuration
+  const [branding, setBranding] = useState<BrandingConfig>({
+    logo: '',
+    primaryColor: '#3B82F6',
+    fontFamily: 'Inter',
+    companyName: 'Your Company',
+    footerText: 'Powered by AdSpyder'
+  });
 
   // Utility functions
   const formatCurrency = (amount: number) => {
@@ -122,16 +132,35 @@ const AdGroupReport: React.FC = () => {
   };
 
   return (
-    <div className="dashboard-container">
+    <div className="dashboard-container" style={{ fontFamily: `var(--font-family-brand, ${branding.fontFamily})` }}>
       <div className="dashboard-wrapper">
+        
+        {/* Branding System */}
+        <BrandingSystem 
+          onBrandingChange={setBranding}
+          initialBranding={branding}
+        />
         
         {/* Report Header - Page Break Before */}
         <header className="dashboard-header page-break-before">
           <div className="dashboard-header-content">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--section-spacing)' }}>
               <div>
-                {/* <!-- API Field: Company Logo --> */}
-                <div className="company-logo-placeholder" id="company_logo">
+                {/* Company Logo Display */}
+                {branding.logo && (
+                  <img 
+                    src={branding.logo} 
+                    alt="Company Logo"
+                    style={{ 
+                      height: '40px', 
+                      maxWidth: '150px', 
+                      objectFit: 'contain',
+                      marginBottom: 'var(--element-spacing)' 
+                    }}
+                    id="company_logo"
+                  />
+                )}
+                {!branding.logo && (
                   <div style={{ 
                     width: '120px', 
                     height: '40px', 
@@ -142,11 +171,12 @@ const AdGroupReport: React.FC = () => {
                     alignItems: 'center',
                     justifyContent: 'center',
                     fontSize: 'var(--font-small)',
-                    color: 'var(--text-secondary)'
+                    color: 'var(--text-secondary)',
+                    marginBottom: 'var(--element-spacing)'
                   }}>
-                    Company Logo
+                    {branding.companyName}
                   </div>
-                </div>
+                )}
               </div>
               
               <div className="no-print">
@@ -168,12 +198,44 @@ const AdGroupReport: React.FC = () => {
               </div>
             </div>
 
-            <h1 className="dashboard-title" id="report_title">{reportTitle}</h1>
+            <h1 
+              className="dashboard-title" 
+              contentEditable
+              suppressContentEditableWarning
+              onBlur={(e) => setReportTitle(e.target.textContent || '')}
+              id="report_title"
+            >
+              {reportTitle}
+            </h1>
             
             <div className="dashboard-date">
-              <strong>Account:</strong> <span id="account_name">{accountName}</span> | 
-              <strong>Campaign:</strong> <span id="campaign_name">{campaignName}</span> | 
-              <strong>Period:</strong> <span id="date_range">{dateRange}</span>
+              <strong>Account:</strong> 
+              <span 
+                contentEditable
+                suppressContentEditableWarning
+                onBlur={(e) => setAccountName(e.target.textContent || '')}
+                id="account_name"
+              >
+                {accountName}
+              </span> | 
+              <strong>Campaign:</strong> 
+              <span 
+                contentEditable
+                suppressContentEditableWarning
+                onBlur={(e) => setCampaignName(e.target.textContent || '')}
+                id="campaign_name"
+              >
+                {campaignName}
+              </span> | 
+              <strong>Period:</strong> 
+              <span 
+                contentEditable
+                suppressContentEditableWarning
+                onBlur={(e) => setDateRange(e.target.textContent || '')}
+                id="date_range"
+              >
+                {dateRange}
+              </span>
             </div>
             <div className="dashboard-date" style={{ marginTop: '8px' }}>
               <strong>Report ID:</strong> <span id="report_id">{reportId}</span> | 
@@ -549,7 +611,7 @@ const AdGroupReport: React.FC = () => {
           </div>
         </section>
 
-        {/* Footer */}
+        {/* Customizable Footer - Page Break Before */}
         <footer className="page-break-before" style={{ 
           textAlign: 'center', 
           marginTop: '48px', 
@@ -559,10 +621,22 @@ const AdGroupReport: React.FC = () => {
           fontSize: 'var(--font-small)'
         }}>
           <div style={{ marginBottom: '8px' }}>
-            <strong>Powered by AdSpyder</strong> | Google Ads Performance Analytics
+            <span 
+              contentEditable
+              suppressContentEditableWarning
+              onBlur={(e) => setBranding({...branding, footerText: e.target.textContent || ''})}
+              id="footer_text"
+              style={{ fontWeight: '600' }}
+            >
+              {branding.footerText}
+            </span> | Google Ads Ad Group Analytics
           </div>
           <div>
-            Report generated on <span id="footer_generated_date">{generatedDate}</span> | Report ID: <span id="footer_report_id">{reportId}</span>
+            Report generated on <span id="footer_generated_date">{generatedDate}</span> | 
+            Report ID: <span id="footer_report_id">{reportId}</span>
+          </div>
+          <div style={{ fontSize: '0.75rem', marginTop: '8px', opacity: 0.7 }}>
+            Page <span className="page-number"></span>
           </div>
           <div style={{ marginTop: '12px', display: 'flex', justifyContent: 'center', gap: 'var(--element-spacing)' }}>
             {/* Social/Contact placeholders */}
@@ -571,6 +645,24 @@ const AdGroupReport: React.FC = () => {
             <div style={{ width: '24px', height: '24px', background: 'var(--background-secondary)', borderRadius: '50%' }}></div>
           </div>
         </footer>
+
+        {/* CSS for print page numbering and export */}
+        <style>{`
+          @media print {
+            .page-break-before { page-break-before: always; }
+            .page-break-avoid { page-break-inside: avoid; }
+            .no-print { display: none !important; }
+            
+            @page {
+              counter-increment: page;
+              margin: 1in;
+            }
+            
+            .page-number:after {
+              content: counter(page);
+            }
+          }
+        `}</style>
       </div>
     </div>
   );

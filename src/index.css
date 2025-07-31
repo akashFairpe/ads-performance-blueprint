@@ -1,62 +1,72 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+/* Design System Implementation - Following Design Principles */
 
-/* Whatagraph-inspired Dashboard Design System for Professional Reports */
-
-/* CSS Variables for consistent theming */
+/* CSS Variables for consistent theming based on Design Principles */
 :root {
-  --background: hsl(220, 26%, 97%);
-  --foreground: hsl(222.2, 84%, 4.9%);
-  --card: hsl(0, 0%, 100%);
-  --card-foreground: hsl(222.2, 84%, 4.9%);
-  --popover: hsl(0, 0%, 100%);
-  --popover-foreground: hsl(222.2, 84%, 4.9%);
-  --primary: hsl(217, 89%, 61%);
+  /* Base Colors - Design Principles */
+  --background-primary: hsl(0, 0%, 100%);           /* #FFFFFF Pure White */
+  --background-secondary: hsl(210, 17%, 98%);       /* #F8F9FA Light Gray */
+  --background-sidebar: hsl(220, 12%, 96%);         /* #F3F4F8 Light Gray */
+  --background-card: hsl(0, 0%, 100%);              /* #FFFFFF with shadows */
+  
+  /* Text Colors - Design Principles */
+  --text-primary: hsl(210, 24%, 16%);               /* #2C3E50 Dark Gray */
+  --text-primary-alt: hsl(0, 0%, 10%);              /* #1A1A1A Black */
+  --text-secondary: hsl(210, 11%, 43%);             /* #6C757D Medium Gray */
+  
+  /* Accent Colors - Design Principles */
+  --accent-blue: hsl(221, 83%, 60%);                /* #3B82F6 Blue */
+  --accent-purple: hsl(253, 87%, 65%);              /* #8B5CF6 Purple */
+  --accent-green: hsl(158, 64%, 52%);               /* #10B981 Green */
+  
+  /* Borders */
+  --border: hsl(220, 13%, 90%);                     /* #E5E7EB Light Gray */
+  
+  /* Box Shadows - Design Principles */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-md: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  
+  /* Standard variables for compatibility */
+  --background: var(--background-primary);
+  --foreground: var(--text-primary);
+  --card: var(--background-card);
+  --card-foreground: var(--text-primary);
+  --primary: var(--accent-blue);
   --primary-foreground: hsl(0, 0%, 100%);
-  --secondary: hsl(210, 40%, 96.1%);
-  --secondary-foreground: hsl(222.2, 47.4%, 11.2%);
-  --muted: hsl(220, 14.3%, 95.9%);
-  --muted-foreground: hsl(220, 8.9%, 46.1%);
-  --accent: hsl(180, 78%, 45%);
+  --secondary: var(--background-secondary);
+  --secondary-foreground: var(--text-primary);
+  --muted: var(--background-secondary);
+  --muted-foreground: var(--text-secondary);
+  --accent: var(--accent-blue);
   --accent-foreground: hsl(0, 0%, 100%);
-  --destructive: hsl(0, 84.2%, 60.2%);
-  --destructive-foreground: hsl(210, 40%, 98%);
-  --border: hsl(220, 13%, 91%);
-  --input: hsl(220, 13%, 91%);
-  --ring: hsl(217, 89%, 61%);
-  
-  /* Dashboard-specific color palette */
-  --dashboard-primary: hsl(217, 89%, 61%);
-  --dashboard-secondary: hsl(262, 80%, 65%);
-  --dashboard-accent: hsl(142, 69%, 58%);
-  --dashboard-warning: hsl(38, 92%, 50%);
-  --dashboard-error: hsl(0, 84%, 60%);
-  --dashboard-success: hsl(142, 71%, 45%);
-  --dashboard-info: hsl(200, 98%, 39%);
-  --dashboard-purple: hsl(262, 83%, 58%);
-  --dashboard-teal: hsl(173, 58%, 39%);
-  --dashboard-orange: hsl(27, 87%, 67%);
-  
-  /* KPI gradients */
-  --kpi-gradient-blue: linear-gradient(135deg, hsl(217, 89%, 61%) 0%, hsl(262, 80%, 65%) 100%);
-  --kpi-gradient-green: linear-gradient(135deg, hsl(142, 69%, 58%) 0%, hsl(173, 58%, 39%) 100%);
-  --kpi-gradient-orange: linear-gradient(135deg, hsl(38, 92%, 50%) 0%, hsl(27, 87%, 67%) 100%);
-  --kpi-gradient-purple: linear-gradient(135deg, hsl(262, 83%, 58%) 0%, hsl(217, 89%, 61%) 100%);
+  --success: var(--accent-green);
+  --warning: hsl(38, 92%, 50%);
+  --destructive: hsl(0, 84%, 60%);
   
   /* Chart Colors */
-  --chart-primary: hsl(217, 89%, 61%);
-  --chart-secondary: hsl(180, 78%, 45%);
-  --chart-tertiary: hsl(262, 83%, 58%);
-  --chart-quaternary: hsl(142, 71%, 45%);
-  --chart-quinary: hsl(38, 92%, 50%);
+  --chart-primary: var(--accent-blue);
+  --chart-secondary: var(--accent-purple);
+  --chart-tertiary: var(--accent-green);
   
   /* Report Colors */
-  --report-header: hsl(215, 28%, 17%);
-  --report-subtext: hsl(215, 16%, 47%);
-  --success: hsl(142, 71%, 45%);
-  --warning: hsl(38, 92%, 50%);
-  --info: hsl(199, 89%, 48%);
+  --report-header: var(--text-primary);
+  --report-subtext: var(--text-secondary);
   
-  --radius: 0.75rem;
+  /* Typography */
+  --font-heading-lg: 24px;                          /* 18-24px range */
+  --font-heading-md: 20px;
+  --font-heading-sm: 18px;
+  --font-body-lg: 16px;                             /* 14-16px range */
+  --font-body-md: 14px;
+  --font-small: 12px;                               /* 12-14px range */
+  
+  /* Layout - Design Principles */
+  --container-max-width: 1200px;
+  --section-spacing: 24px;
+  --element-spacing: 16px;
+  --card-padding: 16px;
+  --border-radius-card: 8px;
+  --border-radius-button: 4px;
 }
 
 /* Dark theme */
@@ -92,8 +102,10 @@ body {
   margin: 0;
   padding: 0;
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-  color: var(--foreground);
-  background: linear-gradient(135deg, var(--background) 0%, hsl(210, 40%, 98%) 100%);
+  font-size: var(--font-body-md);
+  line-height: 1.6;
+  color: var(--text-primary);
+  background: var(--background-primary);
   min-height: 100vh;
 }
 
@@ -160,69 +172,55 @@ body {
   }
 }
 
-/* Dashboard Layout */
+/* Dashboard Layout - Following Design Principles */
 .dashboard-container {
   min-height: 100vh;
-  background: linear-gradient(135deg, var(--background) 0%, hsl(210, 40%, 98%) 100%);
+  background: var(--background-primary);
 }
 
 .dashboard-wrapper {
-  max-width: 1280px;
+  max-width: var(--container-max-width);
   margin: 0 auto;
-  padding: 24px;
+  padding: var(--section-spacing);
   display: flex;
   flex-direction: column;
-  gap: 32px;
+  gap: var(--section-spacing);
 }
 
-/* Whatagraph-style Header */
+/* Header - Design Principles */
 .dashboard-header {
-  position: relative;
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(16px);
-  border: 1px solid rgba(229, 231, 235, 0.5);
-  border-radius: 24px;
-  padding: 32px;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  overflow: hidden;
-}
-
-.dashboard-header::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 8px;
-  background: linear-gradient(90deg, var(--dashboard-primary), var(--dashboard-secondary), var(--dashboard-teal));
+  background: var(--background-card);
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius-card);
+  padding: var(--card-padding);
+  box-shadow: var(--shadow-md);
 }
 
 .dashboard-header-content {
-  position: relative;
-  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  gap: var(--element-spacing);
 }
 
 .dashboard-title {
-  font-size: 2.5rem;
-  font-weight: 700;
-  color: var(--report-header);
-  margin: 0 0 16px 0;
-  background: var(--kpi-gradient-blue);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  font-size: var(--font-heading-lg);
+  font-weight: 600;
+  color: var(--text-primary);
+  margin: 0;
+  line-height: 1.5;
 }
 
 .dashboard-subtitle {
-  font-size: 1.125rem;
-  color: var(--report-subtext);
-  margin: 0 0 24px 0;
+  font-size: var(--font-body-lg);
+  color: var(--text-secondary);
+  margin: 0;
+  line-height: 1.6;
 }
 
 .dashboard-date {
-  font-size: 0.875rem;
-  color: var(--muted-foreground);
-  font-weight: 500;
+  font-size: var(--font-small);
+  color: var(--text-secondary);
+  font-weight: 400;
 }
 
 /* KPI Dashboard Grid */
@@ -239,20 +237,17 @@ body {
 }
 
 .dashboard-kpi {
-  position: relative;
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(229, 231, 235, 0.5);
-  border-radius: 16px;
-  padding: 24px;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  background: var(--background-card);
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius-card);
+  padding: var(--card-padding);
+  box-shadow: var(--shadow-md);
   transition: all 0.3s ease;
-  overflow: hidden;
 }
 
 .dashboard-kpi:hover {
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
 }
 
 .dashboard-kpi::before {
@@ -297,11 +292,10 @@ body {
 }
 
 .kpi-value {
-  font-size: 1.875rem;
-  font-weight: 700;
+  font-size: var(--font-heading-lg);
+  font-weight: 600;
   margin-bottom: 8px;
-  position: relative;
-  z-index: 10;
+  color: var(--text-primary);
 }
 
 .dashboard-kpi:nth-child(1) .kpi-value { 
@@ -333,13 +327,9 @@ body {
 }
 
 .kpi-label {
-  font-size: 0.875rem;
-  font-weight: 600;
-  color: #6b7280;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  position: relative;
-  z-index: 10;
+  font-size: var(--font-body-md);
+  font-weight: 400;
+  color: var(--text-secondary);
 }
 
 .kpi-change {
@@ -374,27 +364,26 @@ body {
 }
 
 .dashboard-chart-card {
-  background: rgba(255, 255, 255, 0.9);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(229, 231, 235, 0.5);
-  border-radius: 16px;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  background: var(--background-card);
+  border: 1px solid var(--border);
+  border-radius: var(--border-radius-card);
+  box-shadow: var(--shadow-md);
   transition: all 0.3s ease;
 }
 
 .dashboard-chart-card:hover {
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  box-shadow: var(--shadow-lg);
 }
 
 .chart-card-header {
-  padding: 24px;
-  border-bottom: 1px solid rgba(229, 231, 235, 0.8);
+  padding: var(--card-padding);
+  border-bottom: 1px solid var(--border);
 }
 
 .chart-card-title {
-  font-size: 1.125rem;
-  font-weight: 700;
-  color: #1f2937;
+  font-size: var(--font-heading-sm);
+  font-weight: 600;
+  color: var(--text-primary);
   margin-bottom: 8px;
   display: flex;
   align-items: center;
@@ -402,19 +391,19 @@ body {
 }
 
 .chart-card-subtitle {
-  font-size: 0.875rem;
-  color: #6b7280;
+  font-size: var(--font-body-md);
+  color: var(--text-secondary);
 }
 
 .chart-card-content {
-  padding: 24px;
+  padding: var(--card-padding);
 }
 
 .whatagraph-chart-placeholder {
   height: 256px;
-  background: linear-gradient(135deg, #f9fafb 0%, rgba(59, 130, 246, 0.3) 100%);
-  border: 2px dashed #d1d5db;
-  border-radius: 12px;
+  background: var(--background-secondary);
+  border: 2px dashed var(--border);
+  border-radius: var(--border-radius-card);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -423,19 +412,19 @@ body {
 }
 
 .whatagraph-chart-placeholder:hover {
-  border-color: #3b82f6;
-  background: rgba(59, 130, 246, 0.5);
+  border-color: var(--accent-blue);
+  background: var(--background-secondary);
 }
 
 .chart-icon-large {
   font-size: 3.75rem;
   margin-bottom: 16px;
-  color: #9ca3af;
+  color: var(--text-secondary);
   transition: color 0.3s ease;
 }
 
 .whatagraph-chart-placeholder:hover .chart-icon-large {
-  color: #3b82f6;
+  color: var(--accent-blue);
 }
 
 .chart-description {
@@ -443,20 +432,20 @@ body {
 }
 
 .chart-main-text {
-  font-size: 1.125rem;
+  font-size: var(--font-heading-sm);
   font-weight: 600;
-  color: #374151;
+  color: var(--text-primary);
   margin-bottom: 8px;
   transition: color 0.3s ease;
 }
 
 .whatagraph-chart-placeholder:hover .chart-main-text {
-  color: #2563eb;
+  color: var(--accent-blue);
 }
 
 .chart-sub-text {
-  font-size: 0.875rem;
-  color: #6b7280;
+  font-size: var(--font-body-md);
+  color: var(--text-secondary);
 }
 
 /* Funnel Chart Specific */
@@ -898,48 +887,51 @@ body {
   transition: box-shadow 0.3s ease;
 }
 
-/* Buttons */
+/* Buttons - Design Principles */
 .btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border-radius: 8px;
+  border-radius: var(--border-radius-button);
   padding: 8px 16px;
-  font-size: 0.875rem;
+  font-size: var(--font-body-md);
   font-weight: 500;
   transition: all 0.2s ease;
   cursor: pointer;
   border: 1px solid transparent;
   text-decoration: none;
+  line-height: 1.5;
 }
 
 .btn-primary {
-  background: var(--primary);
-  color: var(--primary-foreground);
+  background: var(--accent-blue);
+  color: white;
+  box-shadow: var(--shadow-sm);
 }
 
 .btn-primary:hover {
-  background: hsl(217, 89%, 55%);
+  background: hsl(221, 83%, 55%);
+  box-shadow: var(--shadow-md);
 }
 
 .btn-secondary {
-  background: var(--secondary);
-  color: var(--secondary-foreground);
+  background: var(--background-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
 }
 
 .btn-secondary:hover {
-  background: hsl(210, 40%, 92%);
+  background: var(--background-sidebar);
 }
 
 .btn-outline {
-  border-color: var(--border);
+  border: 1px solid var(--border);
   background: transparent;
-  color: var(--foreground);
+  color: var(--text-primary);
 }
 
 .btn-outline:hover {
-  background: var(--accent);
-  color: var(--accent-foreground);
+  background: var(--background-secondary);
 }
 
 /* Form elements */

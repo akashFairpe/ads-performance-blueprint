@@ -161,7 +161,7 @@ const AdGroupReport: React.FC = () => {
                 <button 
                   className="btn btn-secondary"
                   type="button"
-                  onClick={() => window.location.reload()}
+                  onClick={() => console.log('Refreshing data...')}
                 >
                   Refresh Data
                 </button>

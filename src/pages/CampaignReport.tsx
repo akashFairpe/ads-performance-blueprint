@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import LogoUploader from '../components/LogoUploader';
 
 // Type definitions for Campaign Performance Report
 interface CampaignMetrics {
@@ -89,6 +90,13 @@ const CampaignReport: React.FC = () => {
     "This campaign has exceeded performance expectations with a 21.6% conversion rate, significantly above the industry benchmark of 15%. The Summer Sale Banner creative demonstrates the strongest performance with highest CTR and conversion volume. Recommend scaling budget allocation to top-performing creatives and expanding audience targeting to similar demographic segments."
   );
 
+  const [companyLogo, setCompanyLogo] = useState<string>('');
+  const [brandColors, setBrandColors] = useState({
+    primary: '#3B82F6',
+    secondary: '#8B5CF6',
+    accent: '#10B981'
+  });
+
   // Utility functions
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(amount);
@@ -115,21 +123,36 @@ const CampaignReport: React.FC = () => {
           <div className="dashboard-header-content">
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 'var(--section-spacing)' }}>
               <div>
-                {/* <!-- API Field: Company Logo --> */}
-                <div className="company-logo-placeholder" id="company_logo">
-                  <div style={{ 
-                    width: '120px', 
-                    height: '40px', 
-                    background: 'var(--background-secondary)', 
-                    border: '2px dashed var(--border)', 
-                    borderRadius: 'var(--border-radius-card)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    fontSize: 'var(--font-small)',
-                    color: 'var(--text-secondary)'
-                  }}>
-                    Company Logo
+                {/* Company Logo with Upload Functionality */}
+                <div style={{ marginBottom: 'var(--element-spacing)' }}>
+                  <LogoUploader 
+                    onLogoUpload={setCompanyLogo} 
+                    currentLogo={companyLogo}
+                  />
+                </div>
+                
+                {/* Brand Color Customization */}
+                <div className="brand-customization" style={{ display: 'none' }}>
+                  <h4 style={{ fontSize: 'var(--font-small)', fontWeight: '600', marginBottom: '8px' }}>Brand Colors</h4>
+                  <div style={{ display: 'flex', gap: '8px' }}>
+                    <input 
+                      type="color" 
+                      value={brandColors.primary} 
+                      onChange={(e) => setBrandColors({...brandColors, primary: e.target.value})}
+                      title="Primary Color"
+                    />
+                    <input 
+                      type="color" 
+                      value={brandColors.secondary} 
+                      onChange={(e) => setBrandColors({...brandColors, secondary: e.target.value})}
+                      title="Secondary Color"
+                    />
+                    <input 
+                      type="color" 
+                      value={brandColors.accent} 
+                      onChange={(e) => setBrandColors({...brandColors, accent: e.target.value})}
+                      title="Accent Color"
+                    />
                   </div>
                 </div>
               </div>
@@ -146,9 +169,9 @@ const CampaignReport: React.FC = () => {
                 <button 
                   className="btn btn-secondary"
                   type="button"
-                  onClick={() => window.location.reload()}
+                  onClick={() => console.log('Refreshing data...')}
                 >
-                  Share Report
+                  Refresh Data
                 </button>
               </div>
             </div>
@@ -176,7 +199,7 @@ const CampaignReport: React.FC = () => {
             {/* Budget Progress */}
             <div className="dashboard-chart-card">
               <div className="chart-card-header">
-                <h3 className="chart-card-title">💰 Budget Performance</h3>
+                <h3 className="chart-card-title">Budget Performance</h3>
                 <p className="chart-card-subtitle">Spend tracking and remaining budget</p>
               </div>
               <div className="chart-card-content">
@@ -219,7 +242,7 @@ const CampaignReport: React.FC = () => {
             {/* Conversion Funnel */}
             <div className="dashboard-chart-card">
               <div className="chart-card-header">
-                <h3 className="chart-card-title">🔄 Conversion Funnel</h3>
+                <h3 className="chart-card-title">Conversion Funnel</h3>
                 <p className="chart-card-subtitle">Campaign stage performance</p>
               </div>
               <div className="chart-card-content">
@@ -268,28 +291,24 @@ const CampaignReport: React.FC = () => {
           {/* Key Metrics Grid */}
           <div className="kpi-dashboard-grid">
             <div className="dashboard-kpi">
-              <div className="kpi-icon">🎯</div>
               <div className="kpi-value" id="kpi_conversion_rate">{formatPercentage(campaignMetrics.conversionRate)}</div>
               <div className="kpi-label">Conversion Rate</div>
               <div className="kpi-change positive">↗ +4.2%</div>
             </div>
             
             <div className="dashboard-kpi">
-              <div className="kpi-icon">👆</div>
               <div className="kpi-value" id="kpi_ctr">{formatPercentage(campaignMetrics.ctr)}</div>
               <div className="kpi-label">Click-Through Rate</div>
               <div className="kpi-change positive">↗ +2.1%</div>
             </div>
             
             <div className="dashboard-kpi">
-              <div className="kpi-icon">💵</div>
               <div className="kpi-value" id="kpi_avg_cpc">{formatCurrency(campaignMetrics.avgCpc)}</div>
               <div className="kpi-label">Avg. CPC</div>
               <div className="kpi-change negative">↘ -0.15%</div>
             </div>
             
             <div className="dashboard-kpi">
-              <div className="kpi-icon">📊</div>
               <div className="kpi-value" id="kpi_roas">{campaignMetrics.roas}x</div>
               <div className="kpi-label">ROAS</div>
               <div className="kpi-change positive">↗ +12.4%</div>
@@ -306,13 +325,13 @@ const CampaignReport: React.FC = () => {
           <div className="chart-dashboard-grid">
             <div className="dashboard-chart-card">
               <div className="chart-card-header">
-                <h3 className="chart-card-title">📈 Campaign Performance Over Time</h3>
+                <h3 className="chart-card-title">Campaign Performance Over Time</h3>
                 <p className="chart-card-subtitle">Daily metrics throughout the reporting period</p>
               </div>
               <div className="chart-card-content">
                 {/* <!-- API Field: Time Series Chart Data --> */}
                 <div className="whatagraph-chart-placeholder" id="performance_trends_chart" data-chart-type="timeseries">
-                  <div className="chart-icon-large">📈</div>
+                  <div className="chart-icon-large">Chart</div>
                   <div className="chart-description">
                     <div className="chart-main-text">Time Series Performance Chart</div>
                     <div className="chart-sub-text">Daily spend, clicks, and conversions over time</div>
@@ -323,13 +342,13 @@ const CampaignReport: React.FC = () => {
 
             <div className="dashboard-chart-card">
               <div className="chart-card-header">
-                <h3 className="chart-card-title">📊 Comparative Campaign Analysis</h3>
+                <h3 className="chart-card-title">Comparative Campaign Analysis</h3>
                 <p className="chart-card-subtitle">Performance comparison across campaigns</p>
               </div>
               <div className="chart-card-content">
                 {/* <!-- API Field: Comparative Chart Data --> */}
                 <div className="whatagraph-chart-placeholder" id="comparative_analysis_chart" data-chart-type="comparison">
-                  <div className="chart-icon-large">📊</div>
+                  <div className="chart-icon-large">Chart</div>
                   <div className="chart-description">
                     <div className="chart-main-text">Multi-Campaign Comparison</div>
                     <div className="chart-sub-text">Spend vs. Performance metrics</div>
@@ -351,7 +370,7 @@ const CampaignReport: React.FC = () => {
             {/* Demographics Chart */}
             <div className="dashboard-chart-card">
               <div className="chart-card-header">
-                <h3 className="chart-card-title">👥 Demographic Breakdown</h3>
+                <h3 className="chart-card-title">Demographic Breakdown</h3>
                 <p className="chart-card-subtitle">Performance by age and gender segments</p>
               </div>
               <div className="chart-card-content">
@@ -370,13 +389,13 @@ const CampaignReport: React.FC = () => {
             {/* Device Performance */}
             <div className="dashboard-chart-card">
               <div className="chart-card-header">
-                <h3 className="chart-card-title">📱 Device Distribution</h3>
+                <h3 className="chart-card-title">Device Distribution</h3>
                 <p className="chart-card-subtitle">Performance across device types</p>
               </div>
               <div className="chart-card-content">
                 {/* <!-- API Field: Device Chart --> */}
                 <div className="whatagraph-chart-placeholder" id="device_performance_chart" data-chart-type="device">
-                  <div className="chart-icon-large">📱</div>
+                  <div className="chart-icon-large">Chart</div>
                   <div className="chart-description">
                     <div className="chart-main-text">Device Performance Chart</div>
                     <div className="chart-sub-text">Desktop, mobile, and tablet metrics</div>
@@ -555,7 +574,7 @@ const CampaignReport: React.FC = () => {
           </h2>
           
           <div className="dashboard-summary-card">
-            <h3 className="summary-card-title">📝 Performance Analysis</h3>
+            <h3 className="summary-card-title">Performance Analysis</h3>
             <div 
               className="dashboard-editable-content"
               contentEditable

@@ -144,10 +144,19 @@ const AccountReport: React.FC = () => {
               <strong>Generated:</strong> {generatedDate}
             </div>
             <div style={{ marginTop: '16px' }}>
-              <button className="btn btn-primary" onClick={exportToPDF} style={{ marginRight: '12px' }}>
+              <button 
+                className="btn btn-primary" 
+                onClick={exportToPDF} 
+                style={{ marginRight: '12px' }}
+                type="button"
+              >
                 Export PDF
               </button>
-              <button className="btn btn-secondary" onClick={fetchAccountData}>
+              <button 
+                className="btn btn-secondary" 
+                onClick={fetchAccountData}
+                type="button"
+              >
                 Refresh Data
               </button>
             </div>
@@ -162,28 +171,24 @@ const AccountReport: React.FC = () => {
           </h2>
           <div className="kpi-dashboard-grid">
             <div className="dashboard-kpi">
-              <div className="kpi-icon">📊</div>
               <div className="kpi-value" id="kpi_total_clicks">{formatNumber(reportData.clicks)}</div>
               <div className="kpi-label">Total Clicks</div>
               <div className="kpi-change positive">↗ +12.4%</div>
             </div>
             
             <div className="dashboard-kpi">
-              <div className="kpi-icon">👁️</div>
               <div className="kpi-value" id="kpi_total_impressions">{formatNumber(reportData.impressions)}</div>
               <div className="kpi-label">Impressions</div>
               <div className="kpi-change positive">↗ +8.7%</div>
             </div>
             
             <div className="dashboard-kpi">
-              <div className="kpi-icon">💰</div>
               <div className="kpi-value" id="kpi_total_cost">{formatCurrency(reportData.cost)}</div>
               <div className="kpi-label">Total Cost</div>
               <div className="kpi-change negative">↘ -3.2%</div>
             </div>
             
             <div className="dashboard-kpi">
-              <div className="kpi-icon">🎯</div>
               <div className="kpi-value" id="kpi_roas">{reportData.roas}x</div>
               <div className="kpi-label">ROAS</div>
               <div className="kpi-change positive">↗ +18.9%</div>

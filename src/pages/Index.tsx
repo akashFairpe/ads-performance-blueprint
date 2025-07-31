@@ -48,6 +48,22 @@ const Index = () => {
                 View Campaign Report
               </Link>
             </div>
+
+            <div className="dashboard-summary-card">
+              <h3 className="summary-card-title">
+                📁 Ad Group Performance Report
+              </h3>
+              <p style={{ color: 'var(--muted-foreground)', marginBottom: '16px' }}>
+                Detailed analysis of ad group performance with keyword insights and creative metrics.
+              </p>
+              <Link 
+                to="/ad-group-report" 
+                className="btn btn-primary"
+                style={{ width: '100%', textDecoration: 'none', display: 'block', textAlign: 'center' }}
+              >
+                View Ad Group Report
+              </Link>
+            </div>
           </div>
         </section>
       </div>

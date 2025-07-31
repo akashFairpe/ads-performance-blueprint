@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import AccountReport from "./pages/AccountReport";
 import CampaignReport from "./pages/CampaignReport";
+import AdGroupReport from "./pages/AdGroupReport";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -14,6 +15,7 @@ const App = () => (
         <Route path="/" element={<Index />} />
         <Route path="/account-report" element={<AccountReport />} />
         <Route path="/campaign-report" element={<CampaignReport />} />
+        <Route path="/ad-group-report" element={<AdGroupReport />} />
         {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
         <Route path="*" element={<NotFound />} />
       </Routes>

@@ -113,7 +113,13 @@ const CampaignReport: React.FC = () => {
   };
 
   const exportToPDF = () => {
+    console.log('Exporting Campaign Report to PDF...');
     window.print();
+  };
+
+  const refreshData = () => {
+    console.log('Refreshing campaign data...');
+    alert('Campaign data refresh functionality will be connected to Google Ads API. This is a placeholder action.');
   };
 
   return (
@@ -176,7 +182,7 @@ const CampaignReport: React.FC = () => {
                 <button 
                   className="btn btn-secondary"
                   type="button"
-                  onClick={() => console.log('Refreshing data...')}
+                  onClick={refreshData}
                 >
                   Refresh Data
                 </button>

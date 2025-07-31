@@ -73,7 +73,11 @@ const AccountReport: React.FC = () => {
 
   // API Integration Helper Functions (for future implementation)
   const fetchAccountData = async () => {
-    // Example API call structure
+    // Show user feedback
+    console.log('Refreshing data...');
+    alert('Data refresh functionality will be connected to Google Ads API. This is a placeholder action.');
+    
+    // Example API call structure (commented for reference)
     /*
     try {
       const response = await fetch('/api/google-ads/account-summary', {
@@ -93,6 +97,7 @@ const AccountReport: React.FC = () => {
   };
 
   const exportToPDF = () => {
+    console.log('Exporting to PDF...');
     window.print();
   };
 

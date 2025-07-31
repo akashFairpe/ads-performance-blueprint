@@ -119,7 +119,13 @@ const AdGroupReport: React.FC = () => {
   };
 
   const exportToPDF = () => {
+    console.log('Exporting Ad Group Report to PDF...');
     window.print();
+  };
+
+  const refreshData = () => {
+    console.log('Refreshing ad group data...');
+    alert('Ad Group data refresh functionality will be connected to Google Ads API. This is a placeholder action.');
   };
 
   const getStatusColor = (status: string) => {
@@ -191,7 +197,7 @@ const AdGroupReport: React.FC = () => {
                 <button 
                   className="btn btn-secondary"
                   type="button"
-                  onClick={() => console.log('Refreshing data...')}
+                  onClick={refreshData}
                 >
                   Refresh Data
                 </button>

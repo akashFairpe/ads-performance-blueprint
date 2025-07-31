@@ -242,13 +242,8 @@ body {
   border-radius: var(--border-radius-card);
   padding: var(--card-padding);
   box-shadow: var(--shadow-md);
-  transition: all 0.3s ease;
 }
 
-.dashboard-kpi:hover {
-  box-shadow: var(--shadow-lg);
-  transform: translateY(-2px);
-}
 
 .dashboard-kpi::before {
   content: '';
@@ -265,9 +260,6 @@ body {
   opacity: 0.2;
 }
 
-.dashboard-kpi:hover .kpi-icon {
-  opacity: 0.4;
-}
 
 .kpi-value {
   font-size: var(--font-heading-lg);
@@ -346,12 +338,8 @@ body {
   border: 1px solid var(--border);
   border-radius: var(--border-radius-card);
   box-shadow: var(--shadow-md);
-  transition: all 0.3s ease;
 }
 
-.dashboard-chart-card:hover {
-  box-shadow: var(--shadow-lg);
-}
 
 .chart-card-header {
   padding: var(--card-padding);
@@ -386,23 +374,11 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
 }
-
-.whatagraph-chart-placeholder:hover {
-  border-color: var(--accent-blue);
-  background: var(--background-secondary);
-}
-
 .chart-icon-large {
   font-size: 3.75rem;
   margin-bottom: 16px;
   color: var(--text-secondary);
-  transition: color 0.3s ease;
-}
-
-.whatagraph-chart-placeholder:hover .chart-icon-large {
-  color: var(--accent-blue);
 }
 
 .chart-description {
@@ -414,11 +390,6 @@ body {
   font-weight: 600;
   color: var(--text-primary);
   margin-bottom: 8px;
-  transition: color 0.3s ease;
-}
-
-.whatagraph-chart-placeholder:hover .chart-main-text {
-  color: var(--accent-blue);
 }
 
 .chart-sub-text {
